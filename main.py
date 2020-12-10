@@ -1,4 +1,4 @@
-from test_environments import CliffWalkingEnv, MazeEnv
+from environments import CliffWalkingEnv, MazeEnv
 from rl_methods import QLearningAgent
 
 cliffEnv = CliffWalkingEnv()

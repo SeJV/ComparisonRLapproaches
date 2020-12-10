@@ -1,2 +1,0 @@
-from test_environments.cliffwalking import CliffWalkingEnv
-from test_environments.maze import MazeEnv
