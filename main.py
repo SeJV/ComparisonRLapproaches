@@ -1,13 +1,10 @@
 from environments import CliffWalkingEnv, MazeEnv
-from rl_methods import QLearningAgent, DPAgent
+from rl_methods import QLearningAgent, DPAgent, QLearningCuriosityAgent
 
 cliffEnv = CliffWalkingEnv()
-mazeEnv = MazeEnv('s')
+env = cliffEnv
 
-env = mazeEnv
-
-agent = DPAgent(env)
-agent.iterative_policy()
+agent = QLearningCuriosityAgent(env)
 
 state = env.reset()
 done = False
