@@ -1,10 +1,10 @@
 import numpy as np
+from rl_methods.agent import Agent
 
 
-class QLearningAgent:
+class QLearningAgent(Agent):
     def __init__(self, env, gamma=0.99, start_epsilon=1.0, epsilon_min=0.0, alpha=0.01):
-        self.action_space = env.action_space.n
-        self.state_space = env.observation_space.n
+        super().__init__(env)
         self.gamma = gamma
         self.start_epsilon = start_epsilon
         self.epsilon = self.start_epsilon

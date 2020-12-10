@@ -1,11 +1,11 @@
 import numpy as np
+from rl_methods.agent import Agent
 
 
-class DPAgent:
-    def __init__(self, env, theta=0.01, gamma=1):
-        self.action_space = env.action_space.n
-        self.state_space = env.observation_space.n
-        self.mdp = env.env.P  # where self.mdp[state][action] gives a list of (probability, state t+1, reward, done)
+class DPAgent(Agent):
+    def __init__(self, env, theta=0.1, gamma=0.1):
+        super().__init__(env)
+        self.mdp = env.P  # where self.mdp[state][action] gives a list of (probability, state t+1, reward, done)
         self.theta = theta
         self.gamma = gamma
 
@@ -26,19 +26,23 @@ class DPAgent:
             # Policy evaluation until v-values stable
             delta = self.theta
             while not delta < self.theta:
-                delta = self.ip_evaluation()
+                delta = self._ip_evaluation()
 
             # update q_values
-            self.update_q_table()
+            self._update_q_table()
 
             # update policy
-            self.ip_improvement()
+            self._ip_improvement()
 
             self.episode += 1
 
-            has_policy_changed = self.has_policy_changed()
+            has_policy_changed = self._has_policy_changed()
 
-    def ip_evaluation(self):
+    # Train function, so it can be exchanged with other Agents easily
+    def train(self, s_next, reward):
+        pass
+
+    def _ip_evaluation(self):
         delta = 0
         v_new = self.v_table.copy()
         for state in range(self.state_space):
@@ -52,7 +56,7 @@ class DPAgent:
         self.v_table = v_new
         return delta
 
-    def update_q_table(self):
+    def _update_q_table(self):
         for state in range(self.state_space):
             for action in range(self.action_space):
                 s = 0
@@ -60,13 +64,13 @@ class DPAgent:
                     s += next_state_p * (r + self.gamma * self.v_table[next_state])
                 self.q_table[state, action] = s
 
-    def ip_improvement(self):
+    def _ip_improvement(self):
         for state in range(self.state_space):
             best_action = np.argmax(self.q_table[state])
             self.policy[state] = np.zeros(self.action_space)
             self.policy[state, best_action] = 1.0
 
-    def has_policy_changed(self):
+    def _has_policy_changed(self):
         old_policy = self.policy_discrete
         new_policy = np.argmax(self.policy, -1)
 
