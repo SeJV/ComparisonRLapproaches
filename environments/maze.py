@@ -72,7 +72,7 @@ MAZES = {
 
 
 class MazeEnv(DiscreteEnv):
-    def __init__(self, size='m', treasure_reward=1.0, goal_hole_reward=1.0):
+    def __init__(self, size='m', treasure_reward=2.0, goal_hole_reward=1.0):
         self.size = size
         self.init_maze = self._choose_maze(self.size)
         self.maze = self.init_maze.copy()

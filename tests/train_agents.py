@@ -6,12 +6,12 @@ from tests import train_agent
 
 def train_agents(env: DiscreteEnv, agents: List[DiscreteAgent], training_steps=1000, max_step_per_episode=1000,
                  repetitions=3, verbose=True):
-    overall_stats = dict()
+    stats_multiple_agents = dict()
     for agent in agents:
-        overall_stats[agent.name] = []
+        stats_multiple_agents[agent.name] = []
         for rep in range(repetitions):
             agent.reset()
             stats = train_agent(env, agent, training_steps, max_step_per_episode, verbose)
-            overall_stats[agent].append(stats)
+            stats_multiple_agents[agent.name].append(stats)
 
-    return overall_stats
+    return stats_multiple_agents
