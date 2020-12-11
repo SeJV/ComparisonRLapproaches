@@ -1,3 +1,5 @@
+from rl_methods.agent import Agent
 from rl_methods.dynamic_programming_agent import DPAgent
+from rl_methods.sarsa_agent import SarsaAgent
 from rl_methods.q_learning_agent import QLearningAgent
 from rl_methods.q_learning_curiosity_agent import QLearningCuriosityAgent

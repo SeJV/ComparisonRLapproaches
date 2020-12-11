@@ -1,17 +1,14 @@
 from environments import CliffWalkingEnv, MazeEnv
-from rl_methods import QLearningAgent, DPAgent, QLearningCuriosityAgent
+from rl_methods import QLearningAgent, DPAgent, QLearningCuriosityAgent, SarsaAgent
+from tests import train_agent
 
 cliffEnv = CliffWalkingEnv()
 env = cliffEnv
 
-agent = QLearningCuriosityAgent(env)
+agent = SarsaAgent(env, epsilon_start=0.3, epsilon_min=0.1, alpha=0.1)
+agent2 = QLearningAgent(env, epsilon_start=0.3, epsilon_min=0.1, alpha=0.1)
 
-state = env.reset()
-done = False
-while not done:
-    action = agent.choose_action(state)
-    state, reward, done, _ = env.step(action)
-    env.render()
-    agent.train(state, reward)
+train_agent(env, agent, training_steps=3000)
+train_agent(env, agent2, training_steps=3000)
 
 

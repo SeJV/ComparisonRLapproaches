@@ -1,5 +1,5 @@
 from termcolor import colored
-from gym.envs.toy_text import discrete
+from gym.envs.toy_text.discrete import DiscreteEnv
 import numpy as np
 
 LEFT = 0
@@ -71,7 +71,7 @@ MAZES = {
 }
 
 
-class MazeEnv(discrete.DiscreteEnv):
+class MazeEnv(DiscreteEnv):
     def __init__(self, size='m', treasure_reward=1.0, goal_hole_reward=1.0):
         self.size = size
         self.init_maze = self._choose_maze(self.size)

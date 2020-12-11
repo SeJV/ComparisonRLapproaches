@@ -2,8 +2,8 @@ from rl_methods import QLearningAgent
 
 
 class QLearningCuriosityAgent(QLearningAgent):
-    def __init__(self, env, gamma=0.99, start_epsilon=1.0, epsilon_min=0.0, alpha=0.01, icm_scale=0.5):
-        super().__init__(env, gamma, start_epsilon, epsilon_min, alpha)
+    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.01, icm_scale=10):
+        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, gamma=gamma, alpha=alpha)
         self.icm_scale = icm_scale
         self.seen_states_transitions = dict()
 

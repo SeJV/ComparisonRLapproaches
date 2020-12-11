@@ -3,11 +3,13 @@ from rl_methods.agent import Agent
 
 
 class DPAgent(Agent):
-    def __init__(self, env, theta=0.1, gamma=0.1):
-        super().__init__(env)
+    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, theta=0.1, gamma=0.1):
+        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min)
         self.mdp = env.P  # where self.mdp[state][action] gives a list of (probability, state t+1, reward, done)
         self.theta = theta
         self.gamma = gamma
+
+        self.epsilon, self.epsilon_start, self.epsilon_min = 0, 0, 0
 
         self.episode = 1
 
@@ -37,10 +39,6 @@ class DPAgent(Agent):
             self.episode += 1
 
             has_policy_changed = self._has_policy_changed()
-
-    # Train function, so it can be exchanged with other Agents easily
-    def train(self, s_next, reward):
-        pass
 
     def _ip_evaluation(self):
         delta = 0
