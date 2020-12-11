@@ -2,6 +2,6 @@ from rl_methods.discrete_agent import DiscreteAgent
 from rl_methods.dynamic_programming_agent import DPAgent
 from rl_methods.sarsa_agent import SarsaAgent
 from rl_methods.q_learning_agent import QLearningAgent
-from rl_methods.q_learning_curiosity_agent import QLearningCuriosityAgent
 from rl_methods.double_q_learning_agent import DoubleQLearningAgent
+from rl_methods.double_q_learning_curiosity_agent import DoubleQLearningCuriosityAgent
 from rl_methods.mc_control_agent import MCControlAgent

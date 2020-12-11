@@ -20,7 +20,7 @@ def train_agent(env: DiscreteEnv, agent: DiscreteAgent, training_steps=1000, max
             state, reward, done, _ = env.step(action)
             reward_sum += reward
             agent.train(state, reward)
-        agent.episode_done((1 / training_steps) * (agent.epsilon_start - agent.epsilon_min))
+        agent.episode_done(epsilon_reduction=(1 / training_steps) * (agent.epsilon_start - agent.epsilon_min))
         running_steps = 0.99 * running_steps + 0.01 * steps
         running_reward_sum = 0.99 * running_reward_sum + 0.01 * reward_sum
 

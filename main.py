@@ -1,15 +1,12 @@
 from environments import CliffWalkingEnv, MazeEnv
-from rl_methods import QLearningAgent, DoubleQLearningAgent, SarsaAgent, MCControlAgent
+from rl_methods import DoubleQLearningAgent, DoubleQLearningCuriosityAgent, SarsaAgent, MCControlAgent
 from tests import train_agent
 
 
-cliffEnv = CliffWalkingEnv()
-env = cliffEnv
+env = CliffWalkingEnv()
 
-agent0 = QLearningAgent(env, epsilon_start=0.3, epsilon_min=0.1, alpha=0.1)
-agent1 = MCControlAgent(env, epsilon_start=0.3, epsilon_min=0.1)
+agent = DoubleQLearningCuriosityAgent(env, epsilon_start=0.3, alpha=0.1, icm_scale=50)
 
-# train_agent(env, agent0, training_steps=3000)
-train_agent(env, agent1, training_steps=10000)
+train_agent(env, agent, training_steps=3000)
 
 
