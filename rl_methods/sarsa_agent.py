@@ -1,5 +1,5 @@
 import numpy as np
-from rl_methods.agent import Agent
+from rl_methods import Agent
 
 
 class SarsaAgent(Agent):
@@ -34,6 +34,7 @@ class SarsaAgent(Agent):
         return self.a_next
 
     def train(self, s_next, reward):
+        # TODO: something might be wrong, needs deeper analysis
         # s_next stays unused here, in the next choose_action it will become self.s_next
         if self.s and self.a:
             # Q(s,a) ← Q(s,a) + α(reward + γ Q(s_next, a_next) − Q(s,a))

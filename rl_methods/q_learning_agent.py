@@ -1,5 +1,5 @@
 import numpy as np
-from rl_methods.agent import Agent
+from rl_methods import Agent
 
 
 class QLearningAgent(Agent):
