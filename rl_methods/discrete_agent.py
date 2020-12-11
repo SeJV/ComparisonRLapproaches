@@ -2,12 +2,13 @@ from gym.envs.toy_text.discrete import DiscreteEnv
 
 
 class DiscreteAgent:
-    def __init__(self, env: DiscreteEnv, epsilon_start=1.0, epsilon_min=0.0):
+    def __init__(self, env: DiscreteEnv, epsilon_start=1.0, epsilon_min=0.0, name='Agent'):
         self.action_space = env.action_space.n
         self.state_space = env.observation_space.n
         self.epsilon_start = epsilon_start
         self.epsilon = epsilon_start
         self.epsilon_min = epsilon_min
+        self.name = name
 
     def reset(self):
         self.epsilon = self.epsilon_start

@@ -4,8 +4,8 @@ from rl_methods import DiscreteAgent
 
 # Off-Policy Monte Carlo-Control
 class MCControlAgent(DiscreteAgent):
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99):
-        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min)
+    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, name='MCControlAgent'):
+        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, name=name)
         self.gamma = gamma
 
         self.q_table = np.random.rand(self.state_space, self.action_space) * 0.1

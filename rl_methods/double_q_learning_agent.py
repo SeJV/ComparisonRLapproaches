@@ -11,8 +11,9 @@ class DoubleQLearningAgent(QLearningAgent):
     on this position in the first table: q2[s_next, np.argmax(q1[s_next])]
     instead of: np.max(self.q_table[s_next]) in the q-learning agent
     """
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.01):
-        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, gamma=gamma, alpha=alpha)
+    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.01, name='DoubleQLearningAgent'):
+        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, gamma=gamma, alpha=alpha,
+                         name=name)
 
         self.q_tables = np.array([
             np.random.rand(self.state_space, self.action_space) * 0.1,

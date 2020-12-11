@@ -2,8 +2,9 @@ from rl_methods import DoubleQLearningAgent
 
 
 class DoubleQLearningCuriosityAgent(DoubleQLearningAgent):
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.01, icm_scale=10):
-        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, gamma=gamma, alpha=alpha)
+    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.01, icm_scale=10,
+                 name='DoubleQLearningCuriosityAgent'):
+        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, gamma=gamma, alpha=alpha, name=name)
         self.icm_scale = icm_scale
         self.seen_states_transitions = dict()
 

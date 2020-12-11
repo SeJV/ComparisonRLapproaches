@@ -3,8 +3,8 @@ from rl_methods import DiscreteAgent
 
 
 class SarsaAgent(DiscreteAgent):
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.01):
-        super().__init__(env=env, epsilon_start=epsilon_start, epsilon_min=epsilon_min)
+    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.01, name='SarsaAgent'):
+        super().__init__(env=env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, name=name)
         self.gamma = gamma
         self.alpha = alpha
 
