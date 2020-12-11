@@ -1,8 +1,8 @@
 import numpy as np
-from rl_methods.agent import Agent
+from rl_methods.discrete_agent import DiscreteAgent
 
 
-class DPAgent(Agent):
+class DPAgent(DiscreteAgent):
     def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, theta=0.1, gamma=0.1):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min)
         self.mdp = env.P  # where self.mdp[state][action] gives a list of (probability, state t+1, reward, done)
