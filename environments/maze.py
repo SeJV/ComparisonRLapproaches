@@ -86,7 +86,7 @@ class MazeEnv(discrete.DiscreteEnv):
         nS = np.prod(self.maze.shape) * 8
         nA = 4
 
-        # TODO: get transition probabilities
+        # get transition probabilities
         P = {}
         for s in range(nS):
             P[s] = {}
