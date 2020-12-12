@@ -1,4 +1,4 @@
-from rl_methods.agent_type import AgentType
+from rl_methods.abstract_agent import AbstractAgent
 from rl_methods.dynamic_programming_agent import DPAgent
 from rl_methods.sarsa_agent import SarsaAgent
 from rl_methods.q_learning_agent import QLearningAgent

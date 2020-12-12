@@ -1,9 +1,9 @@
 import numpy as np
-from rl_methods import AgentType
+from rl_methods import AbstractAgent
 
 
 # Off-Policy Monte Carlo-Control
-class MCControlAgent(AgentType):
+class MCControlAgent(AbstractAgent):
     def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, name='MCControlAgent'):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, name=name)
         self.gamma = gamma
@@ -28,7 +28,7 @@ class MCControlAgent(AgentType):
         self.actions = []
         self.rewards = []
 
-    def choose_action(self, observation):
+    def act(self, observation):
         if np.random.random() > self.epsilon:
             a = np.argmax(self.q_table[observation])
         else:

@@ -1,10 +1,10 @@
 from typing import List
 from gym import Env
-from rl_methods import AgentType
+from rl_methods import AbstractAgent
 from tests import train_agent
 
 
-def train_agents(env: Env, agents: List[AgentType], training_steps=1000, max_step_per_episode=1000,
+def train_agents(env: Env, agents: List[AbstractAgent], training_steps=1000, max_step_per_episode=1000,
                  repetitions=3, verbose=True):
     stats_multiple_agents = dict()
     for agent in agents:

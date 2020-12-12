@@ -1,9 +1,9 @@
 import numpy as np
 from gym import Env
-from rl_methods import AgentType
+from rl_methods import AbstractAgent
 
 
-def train_agent(env: Env, agent: AgentType, training_steps=1000, max_step_per_episode=1000,
+def train_agent(env: Env, agent: AbstractAgent, training_steps=1000, max_step_per_episode=1000,
                 verbose=True):
     stats = {'steps': [], 'rewards': [], 'epsilon': []}
     episode = 1
@@ -15,7 +15,7 @@ def train_agent(env: Env, agent: AgentType, training_steps=1000, max_step_per_ep
         done = False
         while not done and steps < max_step_per_episode:
             steps += 1
-            action = agent.choose_action(state)
+            action = agent.act(state)
             state, reward, done, _ = env.step(action)
             reward_sum += reward
             agent.train(state, reward)

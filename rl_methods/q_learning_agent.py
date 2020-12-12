@@ -1,8 +1,8 @@
 import numpy as np
-from rl_methods import AgentType
+from rl_methods import AbstractAgent
 
 
-class QLearningAgent(AgentType):
+class QLearningAgent(AbstractAgent):
     def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.01, name='QLearningAgent'):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, name=name)
         self.gamma = gamma
@@ -23,7 +23,7 @@ class QLearningAgent(AgentType):
         self.s = None
         self.a = None
 
-    def choose_action(self, observation):
+    def act(self, observation):
         self.s = observation
 
         if np.random.random() > self.epsilon:

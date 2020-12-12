@@ -1,8 +1,8 @@
 import numpy as np
-from rl_methods.agent_type import AgentType
+from rl_methods.abstract_agent import AbstractAgent
 
 
-class DPAgent(AgentType):
+class DPAgent(AbstractAgent):
     def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, theta=0.1, gamma=0.1, name='DPAgent'):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, name=name)
         self.mdp = env.P  # where self.mdp[state][action] gives a list of (probability, state t+1, reward, done)
@@ -18,7 +18,7 @@ class DPAgent(AgentType):
         self.policy = np.full((self.state_space, self.action_space), 1 / self.action_space)
         self.policy_discrete = np.argmax(self.policy, -1)
 
-    def choose_action(self, observation):
+    def act(self, observation):
         return self.policy_discrete[observation]
 
     def iterative_policy(self):

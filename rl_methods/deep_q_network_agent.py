@@ -6,10 +6,10 @@ from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.losses import Huber
 from tensorflow.keras.optimizers import Nadam
 from tensorflow.keras.utils import to_categorical
-from rl_methods import AgentType
+from rl_methods import AbstractAgent
 
 
-class DeepQNetworkAgent(AgentType):
+class DeepQNetworkAgent(AbstractAgent):
     def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.01, batch_size=512,
                  nn_shape: list = (126, 126), memory_len=10000, name='DeepQNetworkAgent'):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, name=name)
@@ -65,7 +65,7 @@ class DeepQNetworkAgent(AgentType):
 
         return np.matmul(weights[-1][0].T, res) + weights[-1][1]  # linear
 
-    def choose_action(self, observation):
+    def act(self, observation):
         if self.is_state_discrete:
             one_hot = to_categorical(observation, self.state_space[0])
         else:

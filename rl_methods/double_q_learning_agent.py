@@ -31,7 +31,7 @@ class DoubleQLearningAgent(QLearningAgent):
             np.random.rand(self.state_space, self.action_space) * 0.01
         ])
 
-    def choose_action(self, observation):
+    def act(self, observation):
         self.s = observation
 
         if np.random.random() > self.epsilon:
