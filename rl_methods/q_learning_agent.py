@@ -15,7 +15,7 @@ class QLearningAgent(DiscreteAgent):
 
     def reset(self):
         super().reset()
-        self.q_table = np.random.rand(self.state_space, self.action_space)
+        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.1
         self.s = None
         self.a = None
 
