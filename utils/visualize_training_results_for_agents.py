@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.ndimage.filters import gaussian_filter1d
 from matplotlib import pyplot as plt
 
 COLORS = [
@@ -27,18 +28,22 @@ def visualize_training_results_for_agents(stats_multiple_agents: dict):
         rewards_per_repetition = np.array(rewards_per_repetition)
         rewards_per_episode = np.swapaxes(rewards_per_repetition, 0, 1)
 
-        min_rewards_per_episode = np.min(rewards_per_episode, axis=-1)
-        mean_rewards_per_episode = np.mean(rewards_per_episode, axis=-1)
-        max_rewards_per_episode = np.max(rewards_per_episode, axis=-1)
+        length_episode = len(rewards_per_episode)
 
-        length_episode = len(mean_rewards_per_episode)
+        smooth_filter = length_episode / 200
+        min_rewards_per_episode = gaussian_filter1d(np.min(rewards_per_episode, axis=-1), sigma=smooth_filter)
+        mean_rewards_per_episode = gaussian_filter1d(np.mean(rewards_per_episode, axis=-1), sigma=smooth_filter)
+        max_rewards_per_episode = gaussian_filter1d(np.max(rewards_per_episode, axis=-1), sigma=smooth_filter)
 
         color = COLORS[agent_idx]
-        color_light = color.append(0.1)
+        color_light = color.copy()
+        color_light.append(0.2)
         plt.fill_between(range(length_episode), min_rewards_per_episode, max_rewards_per_episode, color=color_light)
         plt.plot(mean_rewards_per_episode, label=agent_name, color=color, linewidth=3)
 
     plt.grid()
+    plt.ylabel('Summe an Belohnung')
+    plt.xlabel('Episoden')
     plt.legend(loc='lower right')
-    plt.title('Trainingsergebnisse')
+    plt.title('(geglättete) Trainingsergebnisse in Belohnung pro Episode')
     plt.show()
