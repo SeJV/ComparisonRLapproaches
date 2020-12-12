@@ -50,7 +50,7 @@ class DeepQNetworkAgent(AgentType):
         m = Dense(self.action_space)(m)
 
         model = Model(inputs=inp, outputs=m)
-        model.compile(loss=Huber(), optimizer=Nadam(lr=self.alpha))
+        model.compile(loss='mse', optimizer=Nadam(lr=self.alpha))
         return model
 
     def fast_predict(self, inp):
@@ -90,9 +90,9 @@ class DeepQNetworkAgent(AgentType):
         self.memory.append((
             self.s, self.a, reward, s_next
         ))
-        if len(self.memory) > 256 and self.episode % 200 == 0:
+        if len(self.memory) > self.batch_size and self.episode % self.batch_size == 0:
             self.replay()
-            if self.episode % 20000 == 0:
+            if self.episode % self.batch_size * 10 == 0:
                 self.q_model.save('models/dqnModel')
 
         self.episode += 1
@@ -117,4 +117,5 @@ class DeepQNetworkAgent(AgentType):
 
         q_vals = self.q_model.predict(states).reshape((self.batch_size, self.action_space))
         q_vals[np.arange(len(q_vals)), actions] = td_target  # override q_vals where action was taken with td_target
-        self.q_model.fit(states, q_vals, batch_size=self.batch_size, verbose=0)
+
+        self.q_model.fit(states, q_vals, batch_size=32, verbose=0)
