@@ -18,7 +18,7 @@ def train_agent(env: Env, agent: AbstractAgent, training_steps=1000, max_step_pe
             action = agent.act(state)
             state, reward, done, _ = env.step(action)
             reward_sum += reward
-            agent.train(state, reward)
+            agent.train(state, reward, done)
 
         agent.episode_done(epsilon_reduction=(1 / training_steps) * (agent.epsilon_start - agent.epsilon_min))
 
