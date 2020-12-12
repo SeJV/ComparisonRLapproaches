@@ -8,7 +8,16 @@ class MCControlAgent(DiscreteAgent):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, name=name)
         self.gamma = gamma
 
-        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.1
+        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.01
+        self.count_table = np.zeros((self.state_space, self.action_space))
+
+        self.states = []
+        self.actions = []
+        self.rewards = []
+
+    def reset(self):
+        super().reset()
+        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.01
         self.count_table = np.zeros((self.state_space, self.action_space))
 
         self.states = []

@@ -13,11 +13,9 @@ class DiscreteAgent:
     def reset(self):
         self.epsilon = self.epsilon_start
 
-    def choose_action(self, observation):
-        pass
+    def choose_action(self, observation): ...
 
-    def train(self, s_next, reward):
-        pass
+    def train(self, s_next, reward): ...
 
     def episode_done(self, epsilon_reduction=0):
         self.epsilon = max(self.epsilon - epsilon_reduction, self.epsilon_min)

@@ -16,15 +16,15 @@ class DoubleQLearningAgent(QLearningAgent):
                          name=name)
 
         self.q_tables = np.array([
-            np.random.rand(self.state_space, self.action_space) * 0.1,
-            np.random.rand(self.state_space, self.action_space) * 0.1
+            np.random.rand(self.state_space, self.action_space) * 0.01,
+            np.random.rand(self.state_space, self.action_space) * 0.01
         ])
 
     def reset(self):
         super().reset()
         self.q_tables = np.array([
-            np.random.rand(self.state_space, self.action_space) * 0.1,
-            np.random.rand(self.state_space, self.action_space) * 0.1
+            np.random.rand(self.state_space, self.action_space) * 0.01,
+            np.random.rand(self.state_space, self.action_space) * 0.01
         ])
         self.s = None
         self.a = None

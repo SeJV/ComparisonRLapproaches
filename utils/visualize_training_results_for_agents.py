@@ -42,8 +42,8 @@ def visualize_training_results_for_agents(stats_multiple_agents: dict):
         plt.plot(mean_rewards_per_episode, label=agent_name, color=color, linewidth=3)
 
     plt.grid()
-    plt.ylabel('Summe an Belohnung')
-    plt.xlabel('Episoden')
-    plt.legend(loc='lower right')
-    plt.title('(geglättete) Trainingsergebnisse in Belohnung pro Episode')
+    plt.ylabel('sum of rewards')
+    plt.xlabel('episodes')
+    plt.legend(loc='upper left')
+    plt.title('(flattened) trainingresults for reward per episode')
     plt.show()

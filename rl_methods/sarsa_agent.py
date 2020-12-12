@@ -8,7 +8,7 @@ class SarsaAgent(DiscreteAgent):
         self.gamma = gamma
         self.alpha = alpha
 
-        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.1
+        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.01
 
         self.s = None
         self.a = None
@@ -18,7 +18,7 @@ class SarsaAgent(DiscreteAgent):
 
     def reset(self):
         super().reset()
-        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.1
+        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.01
         self.s = None
         self.a = None
         self.s_next = None
@@ -34,7 +34,6 @@ class SarsaAgent(DiscreteAgent):
         return self.a_next
 
     def train(self, s_next, reward):
-        # TODO: something might be wrong, needs deeper analysis
         # s_next stays unused here, in the next choose_action it will become self.s_next
         if self.s and self.a:
             # Q(s,a) ← Q(s,a) + α(reward + γ Q(s_next, a_next) − Q(s,a))

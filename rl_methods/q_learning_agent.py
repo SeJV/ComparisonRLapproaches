@@ -8,14 +8,14 @@ class QLearningAgent(DiscreteAgent):
         self.gamma = gamma
         self.alpha = alpha
 
-        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.1
+        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.01
 
         self.s = None
         self.a = None
 
     def reset(self):
         super().reset()
-        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.1
+        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.01
         self.s = None
         self.a = None
 
