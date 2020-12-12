@@ -1,4 +1,4 @@
-# Comparison of multiple Reinforcement Learning approaches
+# Comparison of Reinforcement Learning approaches
 In this repository many basic Reinforcement Learning approaches are can be tested with environments of OpenAI and others.
 
 This is an handy tool, to compare results of different approaches an hyperparameters on multiple environments. 
