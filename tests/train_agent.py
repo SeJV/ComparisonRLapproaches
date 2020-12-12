@@ -7,10 +7,10 @@ def train_agent(env: DiscreteEnv, agent: DiscreteAgent, training_steps=1000, max
                 verbose=True):
     stats = {'steps': [], 'rewards': [], 'epsilon': []}
     episode = 1
+    running_reward = 0
     for _ in range(training_steps):
         steps = 0
         reward_sum = 0
-        running_reward = 0
         state = env.reset()
         done = False
         while not done and steps < max_step_per_episode:
@@ -26,7 +26,7 @@ def train_agent(env: DiscreteEnv, agent: DiscreteAgent, training_steps=1000, max
         stats['rewards'].append(reward_sum)
         stats['epsilon'].append(agent.epsilon)
 
-        running_reward = 0.99 * running_reward + 0.01 * reward_sum
+        running_reward = 0.9 * running_reward + 0.1 * reward_sum
 
         if verbose and episode % (training_steps / 10) == 0:
             print(f'Steps: {round(steps)}, rounded Reward: {round(running_reward, 3)}, Epsilon: {round(agent.epsilon, 3)}')
