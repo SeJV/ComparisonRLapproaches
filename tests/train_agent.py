@@ -1,9 +1,9 @@
 import numpy as np
-from rl_methods import DiscreteAgent
-from gym.envs.toy_text.discrete import DiscreteEnv
+from gym import Env
+from rl_methods import AgentType
 
 
-def train_agent(env: DiscreteEnv, agent: DiscreteAgent, training_steps=1000, max_step_per_episode=1000,
+def train_agent(env: Env, agent: AgentType, training_steps=1000, max_step_per_episode=1000,
                 verbose=True):
     stats = {'steps': [], 'rewards': [], 'epsilon': []}
     episode = 1

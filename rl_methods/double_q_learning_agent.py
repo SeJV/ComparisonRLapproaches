@@ -15,6 +15,10 @@ class DoubleQLearningAgent(QLearningAgent):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, gamma=gamma, alpha=alpha,
                          name=name)
 
+        # only discrete environments possible
+        self.state_space = self.env.observation_space.n
+        self.action_space = self.env.action_space.n
+
         self.q_tables = np.array([
             np.random.rand(self.state_space, self.action_space) * 0.01,
             np.random.rand(self.state_space, self.action_space) * 0.01
@@ -26,8 +30,6 @@ class DoubleQLearningAgent(QLearningAgent):
             np.random.rand(self.state_space, self.action_space) * 0.01,
             np.random.rand(self.state_space, self.action_space) * 0.01
         ])
-        self.s = None
-        self.a = None
 
     def choose_action(self, observation):
         self.s = observation
