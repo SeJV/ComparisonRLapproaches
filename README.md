@@ -18,13 +18,18 @@ This is a simpler function to train one agent a single time for a certain amount
 ## agents
 Agent classes are implementations for some methods found in literature for approaches to solve
 reinforcement learning problems. Most of them can be found in [Link](https://web.stanford.edu/class/psych209/Readings/SuttonBartoIPRLBook2ndEd.pdf). 
-### Dynamic Programming
+### Dynamic Programming 
 ### off-policy MC Control
+DEBUG
+### n-step TD-Control
+TODO
 ### SARSA
 ### Q-Learning
 ### Double Q-Learning
-### Double Q-Learning with curiosity
+### MC-Tree Search
+TODO
 ### Deep Q-Learning
+### Deep Q-Learning with curiosity
 
 ## environments
 Here are the environments on which the agents can be tested. They can also be tested on other discrete, or 
