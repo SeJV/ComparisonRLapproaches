@@ -1,5 +1,5 @@
 import numpy as np
-from rl_methods import DeepQNetworkAgent
+from agent_methods import DeepQNetworkAgent
 from collections import deque
 from tensorflow.keras.layers import Dense, Input, Flatten, Concatenate
 from tensorflow.keras.models import Model, load_model

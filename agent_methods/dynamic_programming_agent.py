@@ -1,5 +1,5 @@
 import numpy as np
-from rl_methods.abstract_agent import AbstractAgent
+from agent_methods.abstract_agent import AbstractAgent
 
 
 class DPAgent(AbstractAgent):

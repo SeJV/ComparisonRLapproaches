@@ -1,5 +1,5 @@
 import numpy as np
-from rl_methods import QLearningAgent
+from agent_methods import QLearningAgent
 
 
 class DoubleQLearningAgent(QLearningAgent):

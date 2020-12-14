@@ -1,5 +1,5 @@
 import numpy as np
-from rl_methods import AbstractAgent
+from agent_methods import AbstractAgent
 
 
 # Off-Policy Monte Carlo-Control

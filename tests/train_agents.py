@@ -1,6 +1,6 @@
 from typing import List
 from gym import Env
-from rl_methods import AbstractAgent
+from agent_methods import AbstractAgent
 from tests import train_agent
 
 
