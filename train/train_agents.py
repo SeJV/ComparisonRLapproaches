@@ -1,7 +1,7 @@
 from typing import List
 from gym import Env
 from agent_methods import AbstractAgent
-from tests import train_agent
+from train import train_agent
 
 
 def train_agents(env: Env, agents: List[AbstractAgent], training_steps=1000, max_step_per_episode=1000,

@@ -32,7 +32,7 @@ class QLearningAgent(AbstractAgent):
             self.a = np.random.randint(self.action_space)
         return self.a
 
-    def train(self, s_next, reward):
+    def train(self, s_next, reward, done):
         # Q(s,a) ← Q(s,a) + α(reward + γ max(Q(s_next)) − Q(s,a))
         self.q_table[self.s, self.a] = self.q_table[self.s, self.a] + self.alpha * (
             reward + self.gamma * np.max(self.q_table[s_next]) - self.q_table[self.s, self.a]

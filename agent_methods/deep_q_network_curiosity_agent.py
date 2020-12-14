@@ -1,14 +1,17 @@
 import numpy as np
 from agent_methods import DeepQNetworkAgent
-from collections import deque
 from tensorflow.keras.layers import Dense, Input, Flatten, Concatenate
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.optimizers import Nadam
-from tensorflow.keras.utils import to_categorical
 
 
 class DeepQNetworkCuriosityAgent(DeepQNetworkAgent):
     """
+    TODO: test behavior of intrinsic reward, does it go down over time?
+    TODO: Store png of model graph into folder of the agent
+    TODO: ensure with following the existence of the directory of the model
+        from pathlib import Path
+        Path("/my/directory").mkdir(parents=True, exist_ok=True)
     """
     def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.001, batch_size=512,
                  nn_shape: list = (126, 126), memory_len=500000, icm_scale=1, name='DeepQNetworkCuriosityAgent'):

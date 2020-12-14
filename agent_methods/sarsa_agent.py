@@ -37,7 +37,7 @@ class SarsaAgent(AbstractAgent):
             self.a_next = np.random.randint(self.action_space)
         return self.a_next
 
-    def train(self, s_next, reward):
+    def train(self, s_next, reward, done):
         # s_next stays unused here, in the next choose_action it will become self.s_next
         if self.s and self.a:
             # Q(s,a) ← Q(s,a) + α(reward + γ Q(s_next, a_next) − Q(s,a))

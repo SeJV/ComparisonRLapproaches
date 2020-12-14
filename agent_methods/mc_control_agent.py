@@ -12,7 +12,7 @@ class MCControlAgent(AbstractAgent):
         self.state_space = self.env.observation_space.n
         self.action_space = self.env.action_space.n
 
-        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.01
+        self.q_table = np.zeros((self.state_space, self.action_space))
         self.count_table = np.zeros((self.state_space, self.action_space))
 
         self.states = []
@@ -21,7 +21,7 @@ class MCControlAgent(AbstractAgent):
 
     def reset(self):
         super().reset()
-        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.01
+        self.q_table = np.zeros((self.state_space, self.action_space))
         self.count_table = np.zeros((self.state_space, self.action_space))
 
         self.states = []
@@ -38,7 +38,7 @@ class MCControlAgent(AbstractAgent):
         self.actions.append(a)
         return a
 
-    def train(self, s_next, reward):
+    def train(self, s_next, reward, done):
         self.rewards.append(reward)
 
     def episode_done(self, epsilon_reduction=0):
@@ -54,7 +54,7 @@ class MCControlAgent(AbstractAgent):
             self.q_table[s_t, a_t] += (w / self.count_table[s_t, a_t]) * (g - self.q_table[s_t, a_t])
             if a_t != np.argmax(self.q_table[s_t]):
                 break
-            w *= 1 / (1 - self.epsilon)  # 1-self.epsilon is not exactly the probability of policy choosing a_t
+            w *= 1 / (1 - self.epsilon)  # TODO: 1-self.epsilon is not exactly the probability of policy choosing a_t
 
         self.states = []
         self.actions = []

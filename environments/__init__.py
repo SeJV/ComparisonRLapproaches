@@ -8,7 +8,7 @@ from gym.envs.toy_text.frozen_lake import FrozenLakeEnv
 # Continuous observation space and discrete action space:
 from gym.envs.classic_control.cartpole import CartPoleEnv
 from gym.envs.classic_control.mountain_car import MountainCarEnv
-from gym.envs.classic_control.acrobot import AcrobotEnv  # pendulum with two parts an discrete acttion
+from gym.envs.classic_control.acrobot import AcrobotEnv  # pendulum with two parts an discrete action
 
 # Continuous observation and action space:
 from gym.envs.classic_control.pendulum import PendulumEnv

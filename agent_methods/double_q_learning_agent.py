@@ -41,7 +41,7 @@ class DoubleQLearningAgent(QLearningAgent):
             self.a = np.random.randint(self.action_space)
         return self.a
 
-    def train(self, s_next, reward):
+    def train(self, s_next, reward, done):
         # 50% probability the following, otherwise switch q_tables
         # Q1(s,a) ← Q1(s,a) + α(reward + γ Q2(s_next, argmax_a Q1(s_next, a))) − Q1(s,a))
 
