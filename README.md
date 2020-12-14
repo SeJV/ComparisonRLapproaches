@@ -17,7 +17,7 @@ This is a simpler function to train one agent a single time for a certain amount
 
 ## agents
 Agent classes are implementations for some methods found in literature for approaches to solve
-reinforcement learning problems. Most of them can be found in [Link](https://web.stanford.edu/class/psych209/Readings/SuttonBartoIPRLBook2ndEd.pdf). 
+reinforcement learning problems. Most of them can be found in [Reinforcement Learning - An Introduction by Richard S. Sutton and Andrew G. Barto](https://web.stanford.edu/class/psych209/Readings/SuttonBartoIPRLBook2ndEd.pdf). 
 ### Dynamic Programming 
 ### off-policy MC Control
 DEBUG
