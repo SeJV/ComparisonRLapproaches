@@ -1,6 +1,17 @@
+# Discrete observation and action space:
 from environments.maze import MazeEnv
+from gym.envs.toy_text.cliffwalking import CliffWalkingEnv
+from gym.envs.toy_text.taxi import TaxiEnv
+# can be init with map_size='8x8' or create random with desc = generate_random_map(size) and FrozenLakeEnv(desc)
+from gym.envs.toy_text.frozen_lake import FrozenLakeEnv
 
-FROZEN_LAKE = 'FrozenLake-v0'
-FROZEN_LAKE8x8 = 'FrozenLake8x8-v0'
-CLIFF_WALKING = 'CliffWalking-v0'
-TAXI = 'Taxi-v3'
+# Continuous observation space and discrete action space:
+from gym.envs.classic_control.cartpole import CartPoleEnv
+from gym.envs.classic_control.mountain_car import MountainCarEnv
+from gym.envs.classic_control.acrobot import AcrobotEnv  # pendulum with two parts an discrete acttion
+
+# Continuous observation and action space:
+from gym.envs.classic_control.pendulum import PendulumEnv
+from gym.envs.classic_control.continuous_mountain_car import Continuous_MountainCarEnv
+
+# Atari Envs import with gym.make('id') all with continuous observation space and discrete action space

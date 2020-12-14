@@ -1,16 +1,16 @@
 import numpy as np
 from gym.envs.toy_text.discrete import DiscreteEnv
+from gym.spaces import Box, Discrete
 from collections import deque
 from tensorflow.keras.layers import Dense, Input, Flatten
 from tensorflow.keras.models import Model, load_model
-from tensorflow.keras.losses import Huber
 from tensorflow.keras.optimizers import Nadam
 from tensorflow.keras.utils import to_categorical
 from rl_methods import AbstractAgent
 
 
 class DeepQNetworkAgent(AbstractAgent):
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.01, batch_size=512,
+    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.001, batch_size=512,
                  nn_shape: list = (126, 126), memory_len=500000, name='DeepQNetworkAgent'):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, name=name)
         self.gamma = gamma
@@ -21,10 +21,10 @@ class DeepQNetworkAgent(AbstractAgent):
         self.is_state_discrete = False
 
         # only discrete actions possible, continuous and discrete state_space possible
-        if isinstance(self.env, DiscreteEnv):
+        if isinstance(self.env.observation_space, Discrete):
             self.state_space = (self.env.observation_space.n, )
             self.is_state_discrete = True
-        else:
+        elif isinstance(self.env.observation_space, Box):
             self.state_space = self.env.observation_space.shape
         self.action_space = self.env.action_space.n
 
@@ -51,7 +51,7 @@ class DeepQNetworkAgent(AbstractAgent):
         m = Dense(self.action_space)(m)
 
         model = Model(inputs=inp, outputs=m)
-        model.compile(loss='mse', optimizer=Nadam(lr=self.alpha))
+        self._compile_models()
         return model
 
     def fast_predict(self, inp):
@@ -75,10 +75,11 @@ class DeepQNetworkAgent(AbstractAgent):
         self.s = np.expand_dims(one_hot, axis=0)
 
         if np.random.random() > self.epsilon:
-            self.a = np.argmax(self.fast_predict(self.s))
+            action = np.argmax(self.fast_predict(self.s))
         else:
-            self.a = np.random.randint(self.action_space)
-        return self.a
+            action = np.random.randint(self.action_space)
+        self.a = to_categorical(action, self.action_space)
+        return action
 
     def train(self, s_next, reward, done):
         if self.is_state_discrete:
@@ -95,22 +96,31 @@ class DeepQNetworkAgent(AbstractAgent):
             self._replay()
             if self.episode % (self.batch_size * 10) == 0:
                 self.target_model.set_weights(self.q_model.get_weights())
-                self.q_model.save('models/dqnModel')
+                self.target_model.make_predict_function()
+                self.store_models()
 
         self.episode += 1
 
-    def load(self):
-        self.q_model = load_model('models/dqnModel')
-        self.target_model = load_model('models/dqnModel')
+    def store_models(self):
+        self.q_model.save(f'models/{self.name}/q_model')
+
+    def load_models(self):
+        self.q_model = load_model(f'models/{self.name}/q_model')
+        self.target_model = load_model(f'models/{self.name}/q_model')
+        self._compile_models()
+
+    def _compile_models(self):
+        self.q_model.compile(loss='mse', optimizer=Nadam(lr=self.alpha))
+        self.target_model.compile(loss='mse', optimizer=Nadam(lr=self.alpha))
 
     def _replay(self):
         mem_batch_idx = np.random.randint(len(self.memory), size=self.batch_size)
         mem_batch = np.array(self.memory)[mem_batch_idx]
 
-        states = np.stack(mem_batch[:, 0])
-        actions = mem_batch[:, 1].astype(int)
+        states = np.squeeze(np.stack(mem_batch[:, 0]))
+        actions = np.squeeze(np.stack(mem_batch[:, 1]))
         rewards = mem_batch[:, 2]
-        next_states = np.stack(mem_batch[:, 3])
+        next_states = np.squeeze(np.stack(mem_batch[:, 3]))
         dones = mem_batch[:, 4].astype(bool)
 
         # Q(s,a) ← Q(s,a) + α(reward + γ max(Q(s_next)) − Q(s,a))
@@ -121,6 +131,6 @@ class DeepQNetworkAgent(AbstractAgent):
         td_target = rewards + self.gamma * estimate_optimal_future
 
         q_vals = self.q_model.predict(states).reshape((self.batch_size, self.action_space))
-        q_vals[np.arange(len(q_vals)), actions] = td_target  # override q_vals where action was taken with td_target
+        q_vals[np.arange(len(q_vals)), np.argmax(actions, axis=-1)] = td_target   # override q_vals where action was taken with td_target
 
         self.q_model.fit(states, q_vals, batch_size=32, verbose=0)
