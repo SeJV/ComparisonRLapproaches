@@ -5,12 +5,12 @@ from utils import visualize_training_results_for_agents
 
 env = FrozenLakeEnv()
 
-mc_agent = MCControlAgent(env, alpha=0.01)
-sarsa_agent = SarsaAgent(env, alpha=0.01)
-q_agent = QLearningAgent(env, alpha=0.01)
-double_q_agent = DoubleQLearningAgent(env, alpha=0.01)
+mc_agent = MCControlAgent(env, alpha_start=0.1)
+sarsa_agent = SarsaAgent(env, alpha_start=0.1)
+q_agent = QLearningAgent(env, alpha_start=0.1)
+double_q_agent = DoubleQLearningAgent(env, alpha_start=0.1)
 
-stats = train_agents(env, [mc_agent, sarsa_agent, q_agent, double_q_agent], training_steps=20000, repetitions=2)
+stats = train_agents(env, [mc_agent, sarsa_agent, q_agent, double_q_agent], training_steps=10000, repetitions=2)
 visualize_training_results_for_agents(stats, save_fig='table_based_models_frozen_lake.png',
                                       environment_name='FrozenLake')
 

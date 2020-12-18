@@ -10,11 +10,12 @@ from agent_methods import AbstractAgent
 
 
 class DeepQNetworkAgent(AbstractAgent):
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.001, train_size=512,
-                 nn_shape: list = (126, 126), memory_len=500000, auto_store_models=False, name='DeepQNetworkAgent'):
-        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, name=name)
+    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, alpha_start=0.001, alpha_min=0.0001, gamma=0.99,
+                 train_size=512, nn_shape: list = (126, 126), memory_len=500000, auto_store_models=False,
+                 name='DeepQNetworkAgent'):
+        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, alpha_start=alpha_start,
+                         alpha_min=alpha_min, name=name)
         self.gamma = gamma
-        self.alpha = alpha
         self.train_size = train_size
         self.nn_shape = nn_shape
         self.memory_len = memory_len

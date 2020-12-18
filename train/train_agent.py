@@ -19,8 +19,9 @@ def train_agent(env: Env, agent: AbstractAgent, training_steps=1000, max_step_pe
             state, reward, done, _ = env.step(action)
             reward_sum += reward
             agent.train(state, reward, done)
-
-        agent.episode_done(epsilon_reduction=(1 / training_steps) * (agent.epsilon_start - agent.epsilon_min))
+        epsilon_red = (1 / training_steps) * (agent.epsilon_start - agent.epsilon_min)
+        alpha_red = (1 / training_steps) * (agent.alpha_start - agent.alpha_min)
+        agent.episode_done(epsilon_reduction=epsilon_red, alpha_reduction=alpha_red)
 
         stats['steps'].append(steps)
         stats['rewards'].append(reward_sum)

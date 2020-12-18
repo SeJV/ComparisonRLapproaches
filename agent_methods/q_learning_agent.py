@@ -3,10 +3,11 @@ from agent_methods import AbstractAgent
 
 
 class QLearningAgent(AbstractAgent):
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.01, name='QLearningAgent'):
-        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, name=name)
+    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, alpha_start=0.01, alpha_min=0.001, gamma=0.99,
+                 name='QLearningAgent'):
+        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, alpha_start=alpha_start,
+                         alpha_min=alpha_min, name=name)
         self.gamma = gamma
-        self.alpha = alpha
 
         # only discrete environments possible
         self.state_space = self.env.observation_space.n

@@ -13,10 +13,12 @@ class DeepQNetworkCuriosityAgent(DeepQNetworkAgent):
         from pathlib import Path
         Path("/my/directory").mkdir(parents=True, exist_ok=True)
     """
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.001, train_size=512,
-                 nn_shape: list = (126, 126), memory_len=500000, icm_scale=1, name='DeepQNetworkCuriosityAgent'):
-        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, gamma=gamma, alpha=alpha,
-                         train_size=train_size, nn_shape=nn_shape, memory_len=memory_len, name=name)
+    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, alpha_start=0.001, alpha_min=0.0001, gamma=0.99,
+                 train_size=512, nn_shape: list = (126, 126), memory_len=500000, icm_scale=1,
+                 name='DeepQNetworkCuriosityAgent'):
+        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, alpha_start=alpha_start,
+                         alpha_min=alpha_min, gamma=gamma, train_size=train_size, nn_shape=nn_shape,
+                         memory_len=memory_len, name=name)
 
         self.fe_size = 2
         self.icm_scale = icm_scale

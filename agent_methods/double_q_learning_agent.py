@@ -3,17 +3,10 @@ from agent_methods import QLearningAgent
 
 
 class DoubleQLearningAgent(QLearningAgent):
-    """
-    Double Q-Learning is an variation of the q-learning agent where two independent q-value tables are used.
-    To choose an action, the sum of those is used as the single q-table from the q-learning agent.
-    To train the two tables, by 50% chance one of the tables will get updated, let's say the first one.
-    For the target action for the next state, the position in the table of the second table is used, but the value
-    on this position in the first table: q2[s_next, np.argmax(q1[s_next])]
-    instead of: np.max(self.q_table[s_next]) in the q-learning agent
-    """
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.01, name='DoubleQLearningAgent'):
-        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, gamma=gamma, alpha=alpha,
-                         name=name)
+    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, alpha_start=0.01, alpha_min=0.001, gamma=0.99,
+                 name='DoubleQLearningAgent'):
+        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, alpha_start=alpha_start,
+                         alpha_min=alpha_min, gamma=gamma, name=name)
 
         # only discrete environments possible
         self.state_space = self.env.observation_space.n

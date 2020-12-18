@@ -4,8 +4,8 @@ from agent_methods.abstract_agent import AbstractAgent
 
 
 class DPAgent(AbstractAgent):
-    def __init__(self, env: Env, epsilon_start=1.0, epsilon_min=0.0, theta=0.1, gamma=0.1, name='DPAgent'):
-        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, name=name)
+    def __init__(self, env: Env, theta=0.1, gamma=0.1, name='DPAgent'):
+        super().__init__(env, name=name)
         self.mdp = env.P  # where self.mdp[state][action] gives a list of (probability, state t+1, reward, done)
         self.theta = theta
         self.gamma = gamma
