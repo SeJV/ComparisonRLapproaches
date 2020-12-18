@@ -14,24 +14,26 @@ used to compare discovery behavior of unseen states. Here good exploration is he
 all treasures and get to the goal.   
 
 ### Train function
-Functions to train agents in environments, which results in stats for visualisation or
-other analysis. 
+Functions to train agents in environments, which results in stats for visualisation and further
+analysis.  
 
-#### train agents
-This function you can give an (openAI) environment and a list of agents, which are instances of
-your rl-approaches. It will train every agent for a certain amount of episodes on the environment.
-Those trainings will get repeated multiple times for every agent. The results can be represented 
-by the utils function _visualize_training_results_for_agents_
+#### train_agents
+This function you can pass an env and a list of agents, which are instances of rl-approaches.
+It will train every agent for a certain amount of episodes on the environment. Those trainings
+will get repeated multiple times for every agent. The results can be represented by the utils
+function _visualize_training_results_for_agents_.
 
-#### train agent
-This is a simpler function to train one agent a single time for a certain amount of episodes. 
+#### train_agent
+This is a basis function to train one agent once for a certain amount of episodes. 
 **train_agents** is recommended for most use cases, which makes use of this function. 
 
-### agents
+### Agents
 Agent classes are implementations for some methods found in literature for approaches to solve
 reinforcement learning problems. Most of them can be found in [Reinforcement Learning - An
 Introduction by Richard S. Sutton and Andrew G. Barto](https://web.stanford.edu/class/psych209/Readings/SuttonBartoIPRLBook2ndEd.pdf). 
 #### Dynamic Programming 
+A RL approach, where model information is needed, however no exploration or random sampling. 
+It will approach the true state values by using the bellman equation with 
 #### off-policy MC Control
 DEBUG
 #### n-step TD-Control

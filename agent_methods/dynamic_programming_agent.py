@@ -1,9 +1,10 @@
 import numpy as np
+from gym import Env
 from agent_methods.abstract_agent import AbstractAgent
 
 
 class DPAgent(AbstractAgent):
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, theta=0.1, gamma=0.1, name='DPAgent'):
+    def __init__(self, env: Env, epsilon_start=1.0, epsilon_min=0.0, theta=0.1, gamma=0.1, name='DPAgent'):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, name=name)
         self.mdp = env.P  # where self.mdp[state][action] gives a list of (probability, state t+1, reward, done)
         self.theta = theta
@@ -12,6 +13,10 @@ class DPAgent(AbstractAgent):
         self.epsilon, self.epsilon_start, self.epsilon_min = 0, 0, 0
 
         self.episode = 1
+
+        # only discrete environments possible
+        self.state_space = self.env.observation_space.n
+        self.action_space = self.env.action_space.n
 
         self.v_table = np.zeros(self.state_space)  # np.random.rand(self.state_space), self.v_table[-1] = 0.0
         self.q_table = np.zeros((self.state_space, self.action_space))
