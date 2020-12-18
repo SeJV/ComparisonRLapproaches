@@ -10,15 +10,16 @@ from agent_methods import AbstractAgent
 
 
 class DeepQNetworkAgent(AbstractAgent):
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.001, batch_size=512,
-                 nn_shape: list = (126, 126), memory_len=500000, name='DeepQNetworkAgent'):
+    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.001, train_size=512,
+                 nn_shape: list = (126, 126), memory_len=500000, auto_store_models=False, name='DeepQNetworkAgent'):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, name=name)
         self.gamma = gamma
         self.alpha = alpha
-        self.batch_size = batch_size
+        self.train_size = train_size
         self.nn_shape = nn_shape
         self.memory_len = memory_len
         self.is_state_discrete = False
+        self.auto_store_models = auto_store_models
 
         # only discrete actions possible, continuous and discrete state_space possible
         if isinstance(self.env.observation_space, Discrete):
@@ -31,6 +32,7 @@ class DeepQNetworkAgent(AbstractAgent):
         self.episode = 1
         self.q_model = self.build_model()
         self.target_model = self.build_model()
+        self._compile_models()
         self.s = None
         self.a = None
         self.memory = deque(maxlen=self.memory_len)
@@ -39,6 +41,8 @@ class DeepQNetworkAgent(AbstractAgent):
         super().reset()
         self.episode = 1
         self.q_model = self.build_model()
+        self.target_model = self.build_model()
+        self._compile_models()
         self.s = None
         self.a = None
         self.memory = deque(maxlen=self.memory_len)
@@ -51,7 +55,6 @@ class DeepQNetworkAgent(AbstractAgent):
         m = Dense(self.action_space)(m)
 
         model = Model(inputs=inp, outputs=m)
-        self._compile_models()
         return model
 
     def fast_predict(self, inp):
@@ -92,12 +95,13 @@ class DeepQNetworkAgent(AbstractAgent):
         self.memory.append((
             self.s, self.a, reward, s_next, done
         ))
-        if len(self.memory) > self.batch_size and self.episode % self.batch_size == 0:
+        if len(self.memory) > self.train_size and self.episode % self.train_size == 0:
             self._replay()
-            if self.episode % (self.batch_size * 10) == 0:
+            if self.episode % (self.train_size * 10) == 0:
                 self.target_model.set_weights(self.q_model.get_weights())
                 self.target_model.make_predict_function()
-                self.store_models()
+                if self.auto_store_models:
+                    self.store_models()
 
         self.episode += 1
 
@@ -114,7 +118,7 @@ class DeepQNetworkAgent(AbstractAgent):
         self.target_model.compile(loss='mse', optimizer=Nadam(lr=self.alpha))
 
     def _replay(self):
-        mem_batch_idx = np.random.randint(len(self.memory), size=self.batch_size)
+        mem_batch_idx = np.random.randint(len(self.memory), size=self.train_size)
         mem_batch = np.array(self.memory)[mem_batch_idx]
 
         states = np.squeeze(np.stack(mem_batch[:, 0]))
@@ -130,7 +134,7 @@ class DeepQNetworkAgent(AbstractAgent):
         estimate_optimal_future = np.max(next_q_values, axis=-1).flatten()
         td_target = rewards + self.gamma * estimate_optimal_future
 
-        q_vals = self.q_model.predict(states).reshape((self.batch_size, self.action_space))
+        q_vals = self.q_model.predict(states).reshape((self.train_size, self.action_space))
         q_vals[np.arange(len(q_vals)), np.argmax(actions, axis=-1)] = td_target   # override q_vals where action was taken with td_target
 
         self.q_model.fit(states, q_vals, batch_size=32, verbose=0)

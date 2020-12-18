@@ -35,17 +35,37 @@ Introduction by Richard S. Sutton and Andrew G. Barto](https://web.stanford.edu/
 A RL approach, where model information is needed, however no exploration or random sampling. 
 It will approach the true state values by using the bellman equation with the
 knowledge of transition probabilities of the states and their rewards. 
-#### off-policy MC Control
-DEBUG
-#### n-step TD-Control
-TODO
+#### Monte Carlo Control
+As a model free approach, Monte Carlo control needs to sample data to get 
+information, which the agent then can use to update his policy. To understand 
+what reward can be expected for an action in a state, whole episodes get
+sampled.
 #### SARSA
+Instead of waiting for the end of an episode, the estimations of future rewards
+will be based on the estimations of the following state. 
+#### n-step TD-Control
+_Open to do_
 #### Q-Learning
+Similar to SARSA, however estimations for the following states are not based
+on our actual policy of the agent (most likely epsilon greedy), but on a 
+greedy target policy.
 #### Double Q-Learning
+We use two separate q-tables, where the sum decides the chosen action. 
+We will update randomly one at a time, where estimations for the 
+future states are supported by the respective other table. 
 #### MC-Tree Search
-TODO
+_Open to do_
 #### Deep Q-Learning
+This approach uses a neural network to approximate the q-table of the
+Q-Learning Agent. Additionally training supporting methods like experience
+replay or the use of a separate target model(similar to double q-learning)
+are used. 
+
 #### Deep Q-Learning with curiosity
+To improve exploration a curiosity module is used. Curiosity is defined
+as reduction of uncertainty. From this follows the need of a prediction
+model for future states and a evaluation metric. The worse the prediction
+the more curiosity will get triggered until the agent knows the environment. 
 
 
  

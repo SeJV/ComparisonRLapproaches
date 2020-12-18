@@ -13,10 +13,10 @@ class DeepQNetworkCuriosityAgent(DeepQNetworkAgent):
         from pathlib import Path
         Path("/my/directory").mkdir(parents=True, exist_ok=True)
     """
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.001, batch_size=512,
+    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, gamma=0.99, alpha=0.001, train_size=512,
                  nn_shape: list = (126, 126), memory_len=500000, icm_scale=1, name='DeepQNetworkCuriosityAgent'):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, gamma=gamma, alpha=alpha,
-                         batch_size=batch_size, nn_shape=nn_shape, memory_len=memory_len, name=name)
+                         train_size=train_size, nn_shape=nn_shape, memory_len=memory_len, name=name)
 
         self.fe_size = 2
         self.icm_scale = icm_scale
@@ -63,7 +63,7 @@ class DeepQNetworkCuriosityAgent(DeepQNetworkAgent):
         return Model(inputs=[fe_input], outputs=[fe])
 
     def _replay(self):
-        mem_batch_idx = np.random.randint(len(self.memory), size=self.batch_size)
+        mem_batch_idx = np.random.randint(len(self.memory), size=self.train_size)
         mem_batch = np.array(self.memory)[mem_batch_idx]
 
         states = np.squeeze(np.stack(mem_batch[:, 0]))
@@ -93,7 +93,7 @@ class DeepQNetworkCuriosityAgent(DeepQNetworkAgent):
         estimate_optimal_future = np.max(next_q_values, axis=-1).flatten()
         td_target = rewards + self.gamma * estimate_optimal_future
 
-        q_vals = self.q_model.predict(states).reshape((self.batch_size, self.action_space))
+        q_vals = self.q_model.predict(states).reshape((self.train_size, self.action_space))
         q_vals[np.arange(len(q_vals)), np.argmax(actions, axis=-1)] = td_target  # override q_vals where action was taken with td_target
 
         self.q_model.fit(states, q_vals, batch_size=32, verbose=0)
