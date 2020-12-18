@@ -33,7 +33,8 @@ reinforcement learning problems. Most of them can be found in [Reinforcement Lea
 Introduction by Richard S. Sutton and Andrew G. Barto](https://web.stanford.edu/class/psych209/Readings/SuttonBartoIPRLBook2ndEd.pdf). 
 #### Dynamic Programming 
 A RL approach, where model information is needed, however no exploration or random sampling. 
-It will approach the true state values by using the bellman equation with 
+It will approach the true state values by using the bellman equation with the
+knowledge of transition probabilities of the states and their rewards. 
 #### off-policy MC Control
 DEBUG
 #### n-step TD-Control
