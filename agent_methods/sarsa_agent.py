@@ -3,7 +3,7 @@ from agent_methods import AbstractAgent
 
 
 class SarsaAgent(AbstractAgent):
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, alpha_start=0.01, alpha_min=0.001, gamma=0.99,
+    def __init__(self, env, epsilon_start=1.0, epsilon_min=None, alpha_start=0.01, alpha_min=None, gamma=0.99,
                  name='SarsaAgent'):
         super().__init__(env=env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, alpha_start=alpha_start,
                          alpha_min=alpha_min, name=name)
@@ -41,9 +41,11 @@ class SarsaAgent(AbstractAgent):
     def train(self, s_next, reward, done):
         # s_next stays unused here, in the next choose_action it will become self.s_next
         if self.s and self.a:
+            q_next = self.q_table[self.s_next, self.a_next] if not done else 0
+
             # Q(s,a) ← Q(s,a) + α(reward + γ Q(s_next, a_next) − Q(s,a))
             self.q_table[self.s, self.a] = self.q_table[self.s, self.a] + self.alpha * (
-                    reward + self.gamma * self.q_table[self.s_next, self.a_next] - self.q_table[self.s, self.a]
+                    reward + self.gamma * q_next - self.q_table[self.s, self.a]
             )
 
         # shifting s_next and a_next to s and a

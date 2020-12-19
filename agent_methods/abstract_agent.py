@@ -2,14 +2,14 @@ from gym import Env
 
 
 class AbstractAgent:
-    def __init__(self, env: Env, epsilon_start=1.0, epsilon_min=0.0, alpha_start=0.01, alpha_min=0.001, name='Agent'):
+    def __init__(self, env: Env, epsilon_start=1.0, epsilon_min=None, alpha_start=0.01, alpha_min=None, name='Agent'):
         self.env = env
         self.epsilon_start = epsilon_start
         self.epsilon = epsilon_start
-        self.epsilon_min = epsilon_min
+        self.epsilon_min = epsilon_min if epsilon_min else epsilon_start / 100
         self.alpha_start = alpha_start
         self.alpha = alpha_start
-        self.alpha_min = alpha_min
+        self.alpha_min = alpha_min if alpha_min else alpha_start / 100
         self.name = name
 
     def reset(self):

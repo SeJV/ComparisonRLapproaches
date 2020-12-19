@@ -1,17 +1,16 @@
-from environments import AcrobotEnv
+from environments import CartPoleEnv
 from agent_methods import DeepQNetworkAgent
 from train import train_agents
 from utils import visualize_training_results_for_agents
 
-env = AcrobotEnv()
+env = CartPoleEnv()
 
-dqn_agent0001 = DeepQNetworkAgent(env, alpha=0.0001, nn_shape=[32, 32], train_size=1024, name='DQN alpha=0.0001')
-dqn_agent0005 = DeepQNetworkAgent(env, alpha=0.0005, nn_shape=[32, 32], train_size=1024, name='DQN alpha=0.0005')
-dqn_agent001 = DeepQNetworkAgent(env, alpha=0.001, nn_shape=[32, 32], train_size=1024, name='DQN alpha=0.001')
-dqn_agent002 = DeepQNetworkAgent(env, alpha=0.002, nn_shape=[32, 32], train_size=1024, name='DQN alpha=0.002')
+dqn_agent0003 = DeepQNetworkAgent(env, alpha_start=0.0003, nn_shape=[32, 32], train_size=1024, name='start alpha=0.0003')
+dqn_agent001 = DeepQNetworkAgent(env, alpha_start=0.001, nn_shape=[32, 32], train_size=1024, name='start alpha=0.001')
+dqn_agent003 = DeepQNetworkAgent(env, alpha_start=0.003, nn_shape=[32, 32], train_size=1024, name='start alpha=0.003')
 
-stats = train_agents(env, [dqn_agent0001, dqn_agent0005, dqn_agent001, dqn_agent002],
-                     training_steps=2000, repetitions=2)
-visualize_training_results_for_agents(stats, save_fig='comparison_dqn_acrobot.png',
-                                      environment_name='Acrobot')
+stats = train_agents(env, [dqn_agent0003, dqn_agent001, dqn_agent003],
+                     training_steps=5000, repetitions=1)
+visualize_training_results_for_agents(stats, save_fig='comparison_dqn_cart_pole.png',
+                                      train_for='CartPole with Deep Q Network')
 

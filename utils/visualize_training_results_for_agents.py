@@ -14,7 +14,7 @@ COLORS = [
 ]
 
 
-def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=None, environment_name='environment'):
+def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=None, train_for='environment'):
     for agent_idx, agent_name in enumerate(stats_multiple_agents.keys()):
         steps_per_repetition = []
         rewards_per_repetition = []
@@ -45,7 +45,7 @@ def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=
     plt.ylabel('sum of rewards')
     plt.xlabel('episodes')
     plt.legend(loc='upper left')
-    plt.title(f'(rounded) training results for {environment_name}')
+    plt.title(f'(rounded) training results for {train_for}')
     if save_fig:
         plt.savefig(save_fig)
     else:

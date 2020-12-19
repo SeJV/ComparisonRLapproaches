@@ -3,7 +3,7 @@ from agent_methods import AbstractAgent
 
 
 class QLearningAgent(AbstractAgent):
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=0.0, alpha_start=0.01, alpha_min=0.001, gamma=0.99,
+    def __init__(self, env, epsilon_start=1.0, epsilon_min=None, alpha_start=0.01, alpha_min=None, gamma=0.99,
                  name='QLearningAgent'):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, alpha_start=alpha_start,
                          alpha_min=alpha_min, name=name)
@@ -34,7 +34,9 @@ class QLearningAgent(AbstractAgent):
         return self.a
 
     def train(self, s_next, reward, done):
+        q_next = np.max(self.q_table[s_next]) if not done else 0
+
         # Q(s,a) ← Q(s,a) + α(reward + γ max(Q(s_next)) − Q(s,a))
         self.q_table[self.s, self.a] = self.q_table[self.s, self.a] + self.alpha * (
-            reward + self.gamma * np.max(self.q_table[s_next]) - self.q_table[self.s, self.a]
+            reward + self.gamma * q_next - self.q_table[self.s, self.a]
         )

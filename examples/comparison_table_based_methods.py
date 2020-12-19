@@ -10,7 +10,7 @@ sarsa_agent = SarsaAgent(env, alpha_start=0.1)
 q_agent = QLearningAgent(env, alpha_start=0.1)
 double_q_agent = DoubleQLearningAgent(env, alpha_start=0.1)
 
-stats = train_agents(env, [mc_agent, sarsa_agent, q_agent, double_q_agent], training_steps=10000, repetitions=2)
+stats = train_agents(env, [mc_agent, sarsa_agent, q_agent, double_q_agent], training_steps=10000, repetitions=3)
 visualize_training_results_for_agents(stats, save_fig='table_based_models_frozen_lake.png',
-                                      environment_name='FrozenLake')
+                                      train_for='FrozenLake')
 
