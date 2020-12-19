@@ -74,6 +74,15 @@ MAZES = {
 
 class MazeEnv(DiscreteEnv):
     def __init__(self, size: str = 'm', treasure_reward: float = 2.0, goal_hole_reward: float = 1.0):
+        """
+        Maze environment is a deterministic and discrete environment. The goal is to reach the goal-field, while
+        collecting treasures and bypass holes. The Agent can move in four directions
+        while walls and end of map restrict his movement. The goal and holes end the episode.
+
+        :param size: There are different sizes possible for the maze, stored in MAZES global variable
+        :param treasure_reward: Reward, if the agent collects a treasure
+        :param goal_hole_reward: Reward scale for goal and hole, negative for the hole
+        """
         self.size = size
         self.init_maze = self._choose_maze(self.size)
         self.maze = self.init_maze.copy()
@@ -83,7 +92,8 @@ class MazeEnv(DiscreteEnv):
         self.agent_position = self._get_agent_position()
         self.treasures_collected = {'yellow': False, 'magenta': False, 'cyan': False}
 
-        # either three are treasures collected or not, so times 2x2x2
+        # either one of the three treasures are collected or not,
+        # this binary information is included in the information of the state
         nS = np.prod(self.maze.shape) * 8
         nA = 4
 
@@ -131,6 +141,13 @@ class MazeEnv(DiscreteEnv):
         print('\n')
 
     def _move(self, action: int, row: int, col: int) -> Tuple[int, int]:
+        """
+        For action and position returns outcome position
+        :param action: action of direction
+        :param row: current row
+        :param col: current column
+        :return: row and column of the following state
+        """
         if action == LEFT and 0 <= col - 1 < self.maze.shape[1] and self.maze[row, col - 1] != 'W':
             col = col - 1
         if action == DOWN and 0 <= row + 1 < self.maze.shape[0] and self.maze[row + 1, col] != 'W':
@@ -213,6 +230,13 @@ class MazeEnv(DiscreteEnv):
             return colored('o', 'red', attrs=['bold'])
 
     def _calculate_transition_prob(self, s: int, action: int) -> List[Tuple[float, int, float, bool]]:
+        """
+        For state and action returns a list of possible state outcomes with their probability, reward and information
+        if episode is done.
+        :param s: state
+        :param action: action
+        :return: list of next_states with their probabilities, rewards and information if episode is done
+        """
         board_index = s % self.maze_size
         row, col = self._index_to_coordinate(board_index)
 
