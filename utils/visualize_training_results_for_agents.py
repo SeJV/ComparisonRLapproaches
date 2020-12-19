@@ -6,15 +6,24 @@ COLORS = [
     [1.0, 0.0, 0.0],
     [0.0, 0.0, 1.0],
     [0.13, 0.52, 0.13],
-    [0.5, 0.5, 0.0],
-    [0.0, 0.5, 0.5],
-    [1, 0.54, 0.0],
     [0.54, 0.17, 0.88],
-    [0.54, 0.0, 0.54]
+    [1, 0.54, 0.0],
+    [0.54, 0.0, 0.54],
+    [0.0, 0.5, 0.5],
+    [0.5, 0.5, 0.0],
 ]
 
 
-def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=None, train_for='environment'):
+def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=None, train_for='environment') -> None:
+    """
+    Giving stats resulted from train_agents function, this function creates an plot to showcase those stats.
+    The average of reward per episodes is a thick line, the area between minimum and maximum is shown as light and
+    transparent color.
+
+    :param stats_multiple_agents: return of train_agents function
+    :param save_fig: if None, plot will get shown, else plot is stored as image
+    :param train_for: The title of the plot will say '(rounded) training results for <train_for>'
+    """
     for agent_idx, agent_name in enumerate(stats_multiple_agents.keys()):
         steps_per_repetition = []
         rewards_per_repetition = []
