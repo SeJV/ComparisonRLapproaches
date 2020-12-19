@@ -35,7 +35,7 @@ def train_agent(env: Env, agent: AbstractAgent, training_steps=1000, max_step_pe
 
         if verbose and episode % (training_steps / 10) == 0:
             print(f'Steps: {round(steps)}, rounded Reward: {round(running_reward, 3)}, '
-                  f'Epsilon: {round(agent.epsilon, 3)}, Alpha: {round(agent.alpha, 4)}, ')
+                  f'Epsilon: {round(agent.epsilon, 3)}, Alpha: {round(agent.alpha, 5)}, ')
         episode += 1
 
     return stats
