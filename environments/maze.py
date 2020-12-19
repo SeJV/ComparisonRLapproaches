@@ -1,3 +1,4 @@
+from typing import List, Tuple, Dict
 from termcolor import colored
 from gym.envs.toy_text.discrete import DiscreteEnv
 import numpy as np
@@ -72,7 +73,7 @@ MAZES = {
 
 
 class MazeEnv(DiscreteEnv):
-    def __init__(self, size='m', treasure_reward=2.0, goal_hole_reward=1.0):
+    def __init__(self, size: str = 'm', treasure_reward: float = 2.0, goal_hole_reward: float = 1.0):
         self.size = size
         self.init_maze = self._choose_maze(self.size)
         self.maze = self.init_maze.copy()
@@ -87,7 +88,7 @@ class MazeEnv(DiscreteEnv):
         nA = 4
 
         # get transition probabilities
-        P = {}
+        P = dict()
         for s in range(nS):
             P[s] = {}
             P[s][LEFT] = self._calculate_transition_prob(s, LEFT)
@@ -102,26 +103,26 @@ class MazeEnv(DiscreteEnv):
 
         super(MazeEnv, self).__init__(nS, nA, P, isd)
 
-    def reset(self):
+    def reset(self) -> int:
         self.maze = self.init_maze.copy()
         self.agent_position = self._get_agent_position()
         self.treasures_collected = {'yellow': False, 'magenta': False, 'cyan': False}
         return self._get_state()
 
-    def _new_maze(self):
+    def _new_maze(self) -> None:
         self.init_maze = self._choose_maze(self.size)
 
-    def _get_agent_position(self):
+    def _get_agent_position(self) -> int:
         for row_idx, row in enumerate(self.maze):
             for col_idx, col in enumerate(row):
                 if col == 'A':
                     return self._coordinate_to_index(row_idx, col_idx)
 
     @staticmethod
-    def _choose_maze(size):
+    def _choose_maze(size: str) -> np.ndarray:
         return MAZES[size].copy()
 
-    def render(self, mode='human'):
+    def render(self, mode: str = 'human') -> None:
         row, col = self._index_to_coordinate(self.agent_position)
         maze_copy = self.maze.copy()
         maze_copy[row, col] = 'A'
@@ -129,7 +130,7 @@ class MazeEnv(DiscreteEnv):
             print(*[self._col(field) for field in row])
         print('\n')
 
-    def _move(self, action, row, col):
+    def _move(self, action: int, row: int, col: int) -> Tuple[int, int]:
         if action == LEFT and 0 <= col - 1 < self.maze.shape[1] and self.maze[row, col - 1] != 'W':
             col = col - 1
         if action == DOWN and 0 <= row + 1 < self.maze.shape[0] and self.maze[row + 1, col] != 'W':
@@ -140,7 +141,7 @@ class MazeEnv(DiscreteEnv):
             row = row - 1
         return row, col
 
-    def step(self, action):  # -> observation, reward, done, info
+    def step(self, action: int) -> Tuple[int, float, bool, dict]:  # -> observation, reward, done, info
         row, col = self._index_to_coordinate(self.agent_position)
         self.maze[row, col] = 'S'  # Agent gets removed from current position
         # new position: in bound, no wall
@@ -173,7 +174,7 @@ class MazeEnv(DiscreteEnv):
 
         return obs, reward, done, {}
 
-    def _get_state(self):
+    def _get_state(self) -> int:
         state = self.agent_position
         if self.treasures_collected['yellow']:
             state += self.maze_size
@@ -184,16 +185,16 @@ class MazeEnv(DiscreteEnv):
 
         return state
 
-    def _index_to_coordinate(self, index):
+    def _index_to_coordinate(self, index: int) -> Tuple[int, int]:
         row = index // self.maze.shape[1]
         col = index % self.maze.shape[1]
         return row, col
 
-    def _coordinate_to_index(self, row, col):
+    def _coordinate_to_index(self, row: int, col: int) -> int:
         return row * self.maze.shape[1] + col
 
     @staticmethod
-    def _col(field):
+    def _col(field: str) -> str:
         if field == 'S':
             return field
         if field == 'W':
@@ -211,7 +212,7 @@ class MazeEnv(DiscreteEnv):
         if field == 'H':
             return colored('o', 'red', attrs=['bold'])
 
-    def _calculate_transition_prob(self, s, action):
+    def _calculate_transition_prob(self, s: int, action: int) -> List[Tuple[float, int, float, bool]]:
         board_index = s % self.maze_size
         row, col = self._index_to_coordinate(board_index)
 

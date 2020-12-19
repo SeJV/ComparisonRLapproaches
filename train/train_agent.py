@@ -1,10 +1,11 @@
+from typing import Dict, List
 import numpy as np
 from gym import Env
 from agent_methods import AbstractAgent
 
 
-def train_agent(env: Env, agent: AbstractAgent, training_steps=1000, max_step_per_episode=1000,
-                verbose=True):
+def train_agent(env: Env, agent: AbstractAgent, training_steps: int = 1000, max_step_per_episode: int = 1000,
+                verbose: bool = True) -> Dict[str, List]:
     stats = {'steps': [], 'rewards': [], 'epsilon': [], 'alpha': []}
     episode = 1
     running_reward = 0
