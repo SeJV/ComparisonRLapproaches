@@ -1,10 +1,13 @@
+from typing import Optional
+from gym import Env
 import numpy as np
 from agent_methods import AbstractAgent
 
 
 class QLearningAgent(AbstractAgent):
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=None, alpha_start=0.01, alpha_min=None, gamma=0.99,
-                 name='QLearningAgent'):
+    def __init__(self, env: Env, epsilon_start: float = 1.0, epsilon_min: Optional[float] = None,
+                 alpha_start: float = 0.01, alpha_min: Optional[float] = None, gamma: float = 0.99,
+                 name: str = 'QLearningAgent'):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, alpha_start=alpha_start,
                          alpha_min=alpha_min, name=name)
         self.gamma = gamma
@@ -18,13 +21,13 @@ class QLearningAgent(AbstractAgent):
         self.s = None
         self.a = None
 
-    def reset(self):
+    def reset(self) -> None:
         super().reset()
         self.q_table = np.random.rand(self.state_space, self.action_space) * 0.01
         self.s = None
         self.a = None
 
-    def act(self, observation):
+    def act(self, observation: int) -> int:
         self.s = observation
 
         if np.random.random() > self.epsilon:
@@ -33,7 +36,7 @@ class QLearningAgent(AbstractAgent):
             self.a = np.random.randint(self.action_space)
         return self.a
 
-    def train(self, s_next, reward, done):
+    def train(self, s_next: int, reward: float, done: bool) -> None:
         q_next = np.max(self.q_table[s_next]) if not done else 0
 
         # Q(s,a) ← Q(s,a) + α(reward + γ max(Q(s_next)) − Q(s,a))

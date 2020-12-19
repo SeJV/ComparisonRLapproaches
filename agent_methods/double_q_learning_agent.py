@@ -1,10 +1,13 @@
+from typing import Optional
+from gym import Env
 import numpy as np
 from agent_methods import QLearningAgent
 
 
 class DoubleQLearningAgent(QLearningAgent):
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=None, alpha_start=0.01, alpha_min=None, gamma=0.99,
-                 name='DoubleQLearningAgent'):
+    def __init__(self, env: Env, epsilon_start: float = 1.0, epsilon_min: Optional[float] = None,
+                 alpha_start: float = 0.01, alpha_min: Optional[float] = None, gamma: float = 0.99,
+                 name: str = 'DoubleQLearningAgent'):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, alpha_start=alpha_start,
                          alpha_min=alpha_min, gamma=gamma, name=name)
 
@@ -17,14 +20,14 @@ class DoubleQLearningAgent(QLearningAgent):
             np.random.rand(self.state_space, self.action_space) * 0.01
         ])
 
-    def reset(self):
+    def reset(self) -> None:
         super().reset()
         self.q_tables = np.array([
             np.random.rand(self.state_space, self.action_space) * 0.01,
             np.random.rand(self.state_space, self.action_space) * 0.01
         ])
 
-    def act(self, observation):
+    def act(self, observation: int) -> int:
         self.s = observation
 
         if np.random.random() > self.epsilon:
@@ -34,7 +37,7 @@ class DoubleQLearningAgent(QLearningAgent):
             self.a = np.random.randint(self.action_space)
         return self.a
 
-    def train(self, s_next, reward, done):
+    def train(self, s_next: int, reward: float, done: bool) -> None:
         # 50% probability the following, otherwise switch q_tables
 
         update_q_table = np.random.randint(0, 2)

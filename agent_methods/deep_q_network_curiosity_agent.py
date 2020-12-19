@@ -1,3 +1,4 @@
+from typing import Optional, List, Tuple
 import numpy as np
 from agent_methods import DeepQNetworkAgent
 from tensorflow.keras.layers import Dense, Input, Flatten, Concatenate
@@ -13,12 +14,13 @@ class DeepQNetworkCuriosityAgent(DeepQNetworkAgent):
         from pathlib import Path
         Path("/my/directory").mkdir(parents=True, exist_ok=True)
     """
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=None, alpha_start=0.01, alpha_min=None, gamma=0.99,
-                 train_size=512, nn_shape: list = (126, 126), memory_len=500000, icm_scale=1,
-                 name='DeepQNetworkCuriosityAgent'):
+    def __init__(self, env: Env, epsilon_start: float = 1.0, epsilon_min: Optional[float] = None,
+                 alpha_start: float = 0.01, alpha_min: Optional[float] = None, gamma: float = 0.99,
+                 train_size: int = 512, nn_shape: List[int] = (126, 126), memory_len: int = 500000,
+                 auto_store_models: bool = False, icm_scale: float = 1, name='DeepQNetworkCuriosityAgent'):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, alpha_start=alpha_start,
                          alpha_min=alpha_min, gamma=gamma, train_size=train_size, nn_shape=nn_shape,
-                         memory_len=memory_len, name=name)
+                         memory_len=memory_len, auto_store_models=auto_store_models, name=name)
 
         self.fe_size = 2
         self.icm_scale = icm_scale
@@ -26,12 +28,12 @@ class DeepQNetworkCuriosityAgent(DeepQNetworkAgent):
         # with state and action, predicts next state shared with FE
         self.state_prediction_model, self.inverse_dynamics_model, self.fe = self._build_intrinsic_curiosity_models()
 
-    def reset(self):
+    def reset(self) -> None:
         super().reset()
         # with state and action, predicts next state shared with FE
         self.state_prediction_model, self.inverse_dynamics_model, self.fe = self._build_intrinsic_curiosity_models()
 
-    def _build_intrinsic_curiosity_models(self):
+    def _build_intrinsic_curiosity_models(self) -> Tuple[Model, Model, Model]:
         fe = self._build_feature_encoding()
 
         state_input = Input(shape=self.state_space, name='state_input')
@@ -57,14 +59,14 @@ class DeepQNetworkCuriosityAgent(DeepQNetworkAgent):
         self._compile_models()
         return self.state_prediction_model, self.inverse_dynamics_model, fe
 
-    def _build_feature_encoding(self):
+    def _build_feature_encoding(self) -> Model:
         fe_input = Input(shape=self.state_space, name='feature_encoding')
         fe = Flatten()(fe_input)
         fe = Dense(32, 'relu')(fe)
         fe = Dense(self.fe_size, 'relu')(fe)
         return Model(inputs=[fe_input], outputs=[fe])
 
-    def _replay(self):
+    def _replay(self) -> None:
         mem_batch_idx = np.random.randint(len(self.memory), size=self.train_size)
         mem_batch = np.array(self.memory)[mem_batch_idx]
 
@@ -100,21 +102,21 @@ class DeepQNetworkCuriosityAgent(DeepQNetworkAgent):
 
         self.q_model.fit(states, q_vals, batch_size=32, verbose=0)
 
-    def store_models(self):
+    def store_models(self) -> None:
         super().store_models()
         self.state_prediction_model.save(f'models/{self.name}/state_prediction')
         self.inverse_dynamics_model.save(f'models/{self.name}/inverse_dynamics')
         self.fe.save(f'models/{self.name}/fe')
         # TODO: store models with interconnections, idea: self.full_model with all interconnections to store
 
-    def load_models(self):
+    def load_models(self) -> None:
         self.state_prediction_model = load_model(f'models/{self.name}/state_prediction')
         self.inverse_dynamics_model = load_model(f'models/{self.name}/inverse_dynamics')
         self.fe = load_model(f'models/{self.name}/fe')
         super().load_models()
         # TODO: load models with interconnections, idea: self.full_model deconstruct into the three models
 
-    def _compile_models(self):
+    def _compile_models(self) -> None:
         super()._compile_models()
         self.state_prediction_model.compile(optimizer=Nadam(lr=self.alpha), loss='mse')
         self.inverse_dynamics_model.compile(optimizer=Nadam(lr=self.alpha), loss='mse')

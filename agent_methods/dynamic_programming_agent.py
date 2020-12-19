@@ -4,7 +4,7 @@ from agent_methods.abstract_agent import AbstractAgent
 
 
 class DPAgent(AbstractAgent):
-    def __init__(self, env: Env, theta=0.1, gamma=0.1, name='DPAgent'):
+    def __init__(self, env: Env, theta: float = 0.1, gamma: float = 0.1, name: str = 'DPAgent'):
         super().__init__(env, name=name)
         self.mdp = env.P  # where self.mdp[state][action] gives a list of (probability, state t+1, reward, done)
         self.theta = theta
@@ -23,10 +23,10 @@ class DPAgent(AbstractAgent):
         self.policy = np.full((self.state_space, self.action_space), 1 / self.action_space)
         self.policy_discrete = np.argmax(self.policy, -1)
 
-    def act(self, observation):
+    def act(self, observation: int) -> int:
         return self.policy_discrete[observation]
 
-    def iterative_policy(self):
+    def iterative_policy(self) -> None:
         has_policy_changed = True
 
         while has_policy_changed:
@@ -45,7 +45,7 @@ class DPAgent(AbstractAgent):
 
             has_policy_changed = self._has_policy_changed()
 
-    def _ip_evaluation(self):
+    def _ip_evaluation(self) -> float:
         delta = 0
         v_new = self.v_table.copy()
         for state in range(self.state_space):
@@ -59,7 +59,7 @@ class DPAgent(AbstractAgent):
         self.v_table = v_new
         return delta
 
-    def _update_q_table(self):
+    def _update_q_table(self) -> None:
         for state in range(self.state_space):
             for action in range(self.action_space):
                 s = 0
@@ -67,13 +67,13 @@ class DPAgent(AbstractAgent):
                     s += next_state_p * (r + self.gamma * self.v_table[next_state])
                 self.q_table[state, action] = s
 
-    def _ip_improvement(self):
+    def _ip_improvement(self) -> None:
         for state in range(self.state_space):
             best_action = np.argmax(self.q_table[state])
             self.policy[state] = np.zeros(self.action_space)
             self.policy[state, best_action] = 1.0
 
-    def _has_policy_changed(self):
+    def _has_policy_changed(self) -> bool:
         old_policy = self.policy_discrete
         new_policy = np.argmax(self.policy, -1)
 

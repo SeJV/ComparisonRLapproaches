@@ -1,10 +1,13 @@
+from typing import Optional
+from gym import Env
 import numpy as np
 from agent_methods import AbstractAgent
 
 
 class MCControlAgent(AbstractAgent):
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=None, alpha_start=0.01, alpha_min=None, gamma=0.99,
-                 name='MCControlAgent'):
+    def __init__(self, env: Env, epsilon_start: float = 1.0, epsilon_min: Optional[float] = None,
+                 alpha_start: float = 0.01, alpha_min: Optional[float] = None, gamma: float = 0.99,
+                 name: str = 'MCControlAgent'):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, alpha_start=alpha_start,
                          alpha_min=alpha_min, name=name)
         self.gamma = gamma
@@ -19,7 +22,7 @@ class MCControlAgent(AbstractAgent):
         self.actions = []
         self.rewards = []
 
-    def reset(self):
+    def reset(self) -> None:
         super().reset()
         self.q_table = np.zeros((self.state_space, self.action_space))
 
@@ -27,7 +30,7 @@ class MCControlAgent(AbstractAgent):
         self.actions = []
         self.rewards = []
 
-    def act(self, observation):
+    def act(self, observation: int) -> int:
         if np.random.random() > self.epsilon:
             a = np.argmax(self.q_table[observation])
         else:
@@ -37,10 +40,10 @@ class MCControlAgent(AbstractAgent):
         self.actions.append(a)
         return a
 
-    def train(self, s_next, reward, done):
+    def train(self, s_next: int, reward: float, done: bool) -> None:
         self.rewards.append(reward)
 
-    def episode_done(self, epsilon_reduction=0, alpha_reduction=0):
+    def episode_done(self, epsilon_reduction: float = 0, alpha_reduction: float = 0) -> None:
         super().episode_done(epsilon_reduction, alpha_reduction)
 
         g = 0

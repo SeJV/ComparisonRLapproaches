@@ -1,10 +1,13 @@
+from typing import Optional
+from gym import Env
 import numpy as np
 from agent_methods import AbstractAgent
 
 
 class SarsaAgent(AbstractAgent):
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=None, alpha_start=0.01, alpha_min=None, gamma=0.99,
-                 name='SarsaAgent'):
+    def __init__(self, env: Env, epsilon_start: float = 1.0, epsilon_min: Optional[float] = None,
+                 alpha_start: float = 0.01, alpha_min: Optional[float] = None, gamma: float = 0.99,
+                 name: str = 'SarsaAgent'):
         super().__init__(env=env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, alpha_start=alpha_start,
                          alpha_min=alpha_min, name=name)
         self.gamma = gamma
@@ -21,7 +24,7 @@ class SarsaAgent(AbstractAgent):
         self.s_next = None
         self.a_next = None
 
-    def reset(self):
+    def reset(self) -> None:
         super().reset()
         self.q_table = np.random.rand(self.state_space, self.action_space) * 0.01
         self.s = None
@@ -29,7 +32,7 @@ class SarsaAgent(AbstractAgent):
         self.s_next = None
         self.a_next = None
 
-    def act(self, observation):
+    def act(self, observation: int) -> int:
         self.s_next = observation
 
         if np.random.random() > self.epsilon:
@@ -38,7 +41,7 @@ class SarsaAgent(AbstractAgent):
             self.a_next = np.random.randint(self.action_space)
         return self.a_next
 
-    def train(self, s_next, reward, done):
+    def train(self, s_next: int, reward: float, done: bool) -> None:
         # s_next stays unused here, in the next choose_action it will become self.s_next
         if self.s and self.a:
             q_next = self.q_table[self.s_next, self.a_next] if not done else 0

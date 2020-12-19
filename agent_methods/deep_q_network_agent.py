@@ -1,5 +1,6 @@
+from typing import Optional, List
 import numpy as np
-from gym.envs.toy_text.discrete import DiscreteEnv
+from gym import Env
 from gym.spaces import Box, Discrete
 from collections import deque
 from tensorflow.keras.layers import Dense, Input, Flatten
@@ -10,9 +11,10 @@ from agent_methods import AbstractAgent
 
 
 class DeepQNetworkAgent(AbstractAgent):
-    def __init__(self, env, epsilon_start=1.0, epsilon_min=None, alpha_start=0.01, alpha_min=None, gamma=0.99,
-                 train_size=512, nn_shape: list = (126, 126), memory_len=500000, auto_store_models=False,
-                 name='DeepQNetworkAgent'):
+    def __init__(self, env: Env, epsilon_start: float = 1.0, epsilon_min: Optional[float] = None,
+                 alpha_start: float = 0.01, alpha_min: Optional[float] = None, gamma: float = 0.99,
+                 train_size: int = 512, nn_shape: List[int] = (126, 126), memory_len: int = 500000,
+                 auto_store_models: bool = False, name: str = 'DeepQNetworkAgent'):
         super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, alpha_start=alpha_start,
                          alpha_min=alpha_min, name=name)
         self.gamma = gamma
@@ -38,7 +40,7 @@ class DeepQNetworkAgent(AbstractAgent):
         self.a = None
         self.memory = deque(maxlen=self.memory_len)
 
-    def reset(self):
+    def reset(self) -> None:
         super().reset()
         self.episode = 1
         self.q_model = self.build_model()
@@ -48,7 +50,7 @@ class DeepQNetworkAgent(AbstractAgent):
         self.a = None
         self.memory = deque(maxlen=self.memory_len)
 
-    def build_model(self):
+    def build_model(self) -> Model:
         inp = Input(self.state_space)
         m = Flatten()(inp)
         for layer in self.nn_shape:
@@ -58,7 +60,7 @@ class DeepQNetworkAgent(AbstractAgent):
         model = Model(inputs=inp, outputs=m)
         return model
 
-    def fast_predict(self, inp):
+    def fast_predict(self, inp: np.ndarray) -> np.ndarray:
         weights = []
         for layer in range(2, len(self.nn_shape) + 3):  # input and flatten layer will get ignored, action layer added
             weights.append(self.target_model.layers[layer].get_weights())
@@ -70,7 +72,7 @@ class DeepQNetworkAgent(AbstractAgent):
 
         return np.matmul(weights[-1][0].T, res) + weights[-1][1]  # linear
 
-    def act(self, observation):
+    def act(self, observation: np.ndarray) -> int:
         if self.is_state_discrete:
             one_hot = to_categorical(observation, self.state_space[0])
         else:
@@ -85,7 +87,7 @@ class DeepQNetworkAgent(AbstractAgent):
         self.a = to_categorical(action, self.action_space)
         return action
 
-    def train(self, s_next, reward, done):
+    def train(self, s_next: np.ndarray, reward: float, done: bool) -> None:
         if self.is_state_discrete:
             one_hot = to_categorical(s_next, self.state_space[0])
         else:
@@ -106,19 +108,19 @@ class DeepQNetworkAgent(AbstractAgent):
 
         self.episode += 1
 
-    def store_models(self):
+    def store_models(self) -> None:
         self.q_model.save(f'models/{self.name}/q_model')
 
-    def load_models(self):
+    def load_models(self) -> None:
         self.q_model = load_model(f'models/{self.name}/q_model')
         self.target_model = load_model(f'models/{self.name}/q_model')
         self._compile_models()
 
-    def _compile_models(self):
+    def _compile_models(self) -> None:
         self.q_model.compile(loss='mse', optimizer=Nadam(lr=self.alpha))
         self.target_model.compile(loss='mse', optimizer=Nadam(lr=self.alpha))
 
-    def _replay(self):
+    def _replay(self) -> None:
         mem_batch_idx = np.random.randint(len(self.memory), size=self.train_size)
         mem_batch = np.array(self.memory)[mem_batch_idx]
 
