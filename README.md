@@ -20,9 +20,23 @@ from `agent_methods`. With their class implementation it is also described, for 
 work. 
 
 ```python
-from agent_methods import QLearningAgent
+from agent_methods import SarsaAgent, QLearningAgent
+sarsa_agent = SarsaAgent(env)
 q_learning_agent = QLearningAgent(env)
 ``` 
+
+To train those agents and to visualise the statistics that emerged during training,
+functions from `/train` and `/utils` are used. 
+
+```python
+from train import train_agents
+from utils import visualize_training_results_for_agents
+
+stats = train_agents(env, [sarsa_agent, q_learning_agent])
+visualize_training_results_for_agents(stats)
+```
+
+Examples of usage can be found in `/examples`
 
 
 ### Environments
