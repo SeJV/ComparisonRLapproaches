@@ -11,7 +11,7 @@ state transitions.
 
 
 env = FrozenLakeEnv()
-mcts = MCTreeSearchAgent(env, seconds_per_action=200, amount_simulate_playouts=100)
+mcts = MCTreeSearchAgent(env, playouts_per_action=100, playouts_per_simulation=100000)
 
 stats = train_agents(env, [mcts], training_episodes=1, repetitions=1)
 visualize_training_results_for_agents(stats, save_fig='mcts_on_small_maze.png',

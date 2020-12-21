@@ -47,20 +47,19 @@ class MCTreeSearchAgent(AbstractAgent):
     Reward function must be deterministic
     """
     def __init__(self, env: DiscreteEnv, gamma: float = 0.99, amount_test_probability: int = 1,
-                 amount_simulate_playouts: int = 10, seconds_per_action: float = 0.01, c: float = 1.41,
+                 playouts_per_simulation: int = 100, playouts_per_action: int = 10000, c: float = 1.41,
                  name: str = 'MCTreeSearchAgent'):
         super().__init__(env, name=name)
         self.gamma = gamma
         self.amount_test_probability = amount_test_probability
-        self.amount_simulate_playouts = amount_simulate_playouts
-        self.seconds_per_action = seconds_per_action
+        self.playouts_per_simulation = playouts_per_simulation
+        self.playouts_per_action = playouts_per_action
         self.a = None  # action which was chosen by act function
         self.c = c  # exploration factor of uct formula, sqrt(2) in literature, but can be changed for env
         self.root_node: Optional[_Node] = None
 
     def act(self, observation: int) -> int:
-        now = time.time()
-        while time.time() - now < self.seconds_per_action:
+        for _ in range(self.playouts_per_action):
             # 1. Selection: choose promising leaf node, that is not end of game
             if self.root_node:
                 promising_leaf = self.choose_promising_leaf_node()
@@ -93,7 +92,7 @@ class MCTreeSearchAgent(AbstractAgent):
             rnd_child: _Node = random.choice(promising_leaf.children)
             sum_of_rewards = 0
             discount = 1
-            for _ in range(self.amount_simulate_playouts):
+            for _ in range(self.playouts_per_simulation):
                 env_simulated = rnd_child.env_in_state
                 done = rnd_child.done
                 steps = 0
@@ -103,14 +102,14 @@ class MCTreeSearchAgent(AbstractAgent):
                     discount *= self.gamma
                     steps += 1
 
-            rnd_child.visits += self.amount_simulate_playouts
+            rnd_child.visits += self.playouts_per_simulation
             rnd_child.future_rewards += sum_of_rewards
             # 4. Backpropagation: Update all parent nodes in the chain
             update_node = rnd_child
             discount = self.gamma
             while update_node.parent:
                 update_node = update_node.parent
-                update_node.visits += self.amount_simulate_playouts
+                update_node.visits += self.playouts_per_simulation
                 update_node.future_rewards += discount * sum_of_rewards
                 discount *= self.gamma
 
