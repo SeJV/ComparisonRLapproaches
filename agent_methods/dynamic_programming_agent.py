@@ -23,10 +23,12 @@ class DPAgent(AbstractAgent):
         self.policy = np.full((self.state_space, self.action_space), 1 / self.action_space)
         self.policy_discrete = np.argmax(self.policy, -1)
 
+        self._iterative_policy()  # update q_table
+
     def act(self, observation: int) -> int:
         return self.policy_discrete[observation]
 
-    def iterative_policy(self) -> None:
+    def _iterative_policy(self) -> None:
         has_policy_changed = True
 
         while has_policy_changed:
