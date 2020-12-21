@@ -27,9 +27,9 @@ def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=
     :param zero_zero_start: starting the graphs of agents by 0 episodes and 0 reward
     """
     for agent_idx, agent_name in enumerate(stats_multiple_agents.keys()):
-        steps_per_repetition = [] if not zero_zero_start else [0]
-        rewards_per_repetition = [] if not zero_zero_start else [0]
-        epsilon_per_repetition = [] if not zero_zero_start else [0]
+        steps_per_repetition = []
+        rewards_per_repetition = []
+        epsilon_per_repetition = []
 
         for repetition in stats_multiple_agents[agent_name]:
             steps_per_repetition.append(repetition['steps'])
@@ -42,9 +42,14 @@ def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=
         length_episode = len(rewards_per_episode)
 
         smooth_filter = length_episode / 200
-        min_rewards_per_episode = gaussian_filter1d(np.min(rewards_per_episode, axis=-1), sigma=smooth_filter)
-        mean_rewards_per_episode = gaussian_filter1d(np.mean(rewards_per_episode, axis=-1), sigma=smooth_filter)
-        max_rewards_per_episode = gaussian_filter1d(np.max(rewards_per_episode, axis=-1), sigma=smooth_filter)
+        min_rewards_per_episode = list(gaussian_filter1d(np.min(rewards_per_episode, axis=-1), sigma=smooth_filter))
+        mean_rewards_per_episode = list(gaussian_filter1d(np.mean(rewards_per_episode, axis=-1), sigma=smooth_filter))
+        max_rewards_per_episode = list(gaussian_filter1d(np.max(rewards_per_episode, axis=-1), sigma=smooth_filter))
+
+        if zero_zero_start:
+            min_rewards_per_episode.insert(0, 0.0)
+            mean_rewards_per_episode.insert(0, 0.0)
+            max_rewards_per_episode.insert(0, 0.0)
 
         color = COLORS[agent_idx]
         color_light = color.copy()

@@ -54,12 +54,19 @@ class MCTreeSearchAgent(AbstractAgent):
         self.amount_test_probability = amount_test_probability
         self.playouts_per_simulation = playouts_per_simulation
         self.playouts_per_action = playouts_per_action
-        self.a = None  # action which was chosen by act function
         self.c = c  # exploration factor of uct formula, sqrt(2) in literature, but can be changed for env
+
+        self.a = None  # action which was chosen by act function
         self.root_node: Optional[_Node] = None
+        self.simulation_counter = 0  # counts amount of simulation playouts
+
+    def reset(self) -> None:
+        self.a = None  # action which was chosen by act function
+        self.root_node: Optional[_Node] = None
+        self.simulation_counter = 0  # counts amount of simulation playouts
 
     def act(self, observation: int) -> int:
-        for _ in range(self.playouts_per_action):
+        while self.simulation_counter < self.playouts_per_action:
             # 1. Selection: choose promising leaf node, that is not end of game
             if self.root_node:
                 promising_leaf = self.choose_promising_leaf_node()
@@ -93,6 +100,7 @@ class MCTreeSearchAgent(AbstractAgent):
             sum_of_rewards = 0
             discount = 1
             for _ in range(self.playouts_per_simulation):
+                self.simulation_counter += 1
                 env_simulated = rnd_child.env_in_state
                 done = rnd_child.done
                 steps = 0
@@ -112,8 +120,6 @@ class MCTreeSearchAgent(AbstractAgent):
                 update_node.visits += self.playouts_per_simulation
                 update_node.future_rewards += discount * sum_of_rewards
                 discount *= self.gamma
-
-            self.playouts_per_action += 1
 
         #  choose action with highest estimated reward
         action_list = []
