@@ -6,3 +6,4 @@ from agent_methods.double_q_learning_agent import DoubleQLearningAgent
 from agent_methods.mc_control_agent import MCControlAgent
 from agent_methods.deep_q_network_agent import DeepQNetworkAgent
 from agent_methods.deep_q_network_curiosity_agent import DeepQNetworkCuriosityAgent
+from agent_methods.mc_tree_search_agent import MCTreeSearchAgent

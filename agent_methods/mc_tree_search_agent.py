@@ -8,8 +8,6 @@ from gym import Env
 from gym.envs.toy_text.discrete import DiscreteEnv
 from agent_methods import AbstractAgent
 
-from environments import MazeEnv
-from train import train_agent
 
 BIG_NUMBER = 999999999999999999999
 
@@ -45,7 +43,8 @@ class _Node:
 
 class MCTreeSearchAgent(AbstractAgent):
     """
-    For deterministic discrete environments, expected values, weighted by their probability are used
+    For stochastic discrete environments, expected values, weighted by their probability are used
+    Reward function must be deterministic
     """
     def __init__(self, env: DiscreteEnv, gamma: float = 0.99, amount_test_probability: int = 1,
                  amount_simulate_playouts: int = 10, seconds_per_action: float = 0.01, c: float = 1.41,
@@ -55,6 +54,7 @@ class MCTreeSearchAgent(AbstractAgent):
         self.amount_test_probability = amount_test_probability
         self.amount_simulate_playouts = amount_simulate_playouts
         self.seconds_per_action = seconds_per_action
+        self.a = None  # action which was chosen by act function
         self.c = c  # exploration factor of uct formula, sqrt(2) in literature, but can be changed for env
         self.root_node: Optional[_Node] = None
 
@@ -128,14 +128,6 @@ class MCTreeSearchAgent(AbstractAgent):
             action_list.append(action_estimated_reward)
 
         self.a = int(np.argmax(action_list))
-
-        if max(action_list) > 1:
-            print('hello')
-
-        self.env.render()
-        print('Visits: ', self.root_node.visits, ', Depth: ', self.root_node.get_depth(), ', Action Values: ',
-              [round(a, 4) for a in action_list])
-
         return self.a
 
     def train(self, s_next: int, reward: float, done: bool) -> None:
@@ -158,14 +150,8 @@ class MCTreeSearchAgent(AbstractAgent):
     def uct(self, child: _Node) -> float:
         if child.done:
             return -BIG_NUMBER
-        elif child.visits > 0:
-            return child.future_rewards / child.visits + self.c * sqrt(log(child.parent.visits) / child.visits)
-        else:
+        elif child.visits == 0:
             return BIG_NUMBER
-
-
-e = MazeEnv('s')
-mcts = MCTreeSearchAgent(e, seconds_per_action=60, amount_simulate_playouts=100, gamma=0.9, c=10)
-
-train_agent(e, mcts, training_episodes=1)
+        else:
+            return child.future_rewards / child.visits + self.c * sqrt(log(child.parent.visits) / child.visits)
 
