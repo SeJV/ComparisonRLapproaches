@@ -113,6 +113,8 @@ class MCTreeSearchAgent(AbstractAgent):
                 update_node.future_rewards += discount * sum_of_rewards
                 discount *= self.gamma
 
+            self.playouts_per_action += 1
+
         #  choose action with highest estimated reward
         action_list = []
         for action in range(self.env.action_space.n):

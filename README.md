@@ -6,16 +6,23 @@ This is an handy tool, to compare results of different approaches or the same ap
 different hyperparameters on environments.  
 
 
-## How to use this repo
+## How to use it
 Creating an environment with `gym.make(<gymid>)` or by importing environment from `/environnments` where all the working
 envs are imported. 
 
 ```python
 from environments import FrozenLakeEnv
-env = FrozenLakeEnv(map_name='8x8') 
+env = FrozenLakeEnv(map_name='8x8')
 ```
 
-To test some reinforcement learning methods, you can either implement your own method and   
+To test some reinforcement learning methods, you can either implement your own method and comply with the abstract_agent
+from `agent_methods`. With their class implementation it is also described, for what type of environment they should
+work. 
+
+```python
+from agent_methods import QLearningAgent
+q_learning_agent = QLearningAgent(env)
+``` 
 
 
 ### Environments
