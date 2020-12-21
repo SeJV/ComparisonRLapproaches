@@ -1,9 +1,22 @@
-## Comparison of Reinforcement Learning approaches
+# Comparison of Reinforcement Learning approaches
 In this repository reinforcement learning approaches can be tested and compared with
 environments of OpenAI and others.
 
 This is an handy tool, to compare results of different approaches or the same approach with
 different hyperparameters on environments.  
+
+
+## How to use this repo
+Creating an environment with `gym.make(<gymid>)` or by importing environment from `/environnments` where all the working
+envs are imported. 
+
+```python
+from environments import FrozenLakeEnv
+env = FrozenLakeEnv(map_name='8x8') 
+```
+
+To test some reinforcement learning methods, you can either implement your own method and   
+
 
 ### Environments
 Environments can be loaded from the [open ai package gym](https://gym.openai.com) or 
