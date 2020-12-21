@@ -8,6 +8,11 @@ DOWN = 1
 RIGHT = 2
 UP = 3
 
+
+MAZE_XS = np.array([
+    ['A', 'S', 'S', 'S', 'G'],
+])
+
 MAZE_SMALL = np.array([
     ['A', 'W', 'S', 'S'],
     ['S', 'S', 'S', 'W'],
@@ -65,6 +70,7 @@ MAZE_XL = np.array([
 ])
 
 MAZES = {
+    'xs': MAZE_XS,
     's': MAZE_SMALL,
     'm': MAZE,
     'l': MAZE_LARGE,
@@ -235,7 +241,7 @@ class MazeEnv(DiscreteEnv):
         if episode is done.
         :param s: state
         :param action: action
-        :return: list of next_states with their probabilities, rewards and information if episode is done
+        :return: list of next_states with their probabilities, future_rewards and information if episode is done
         """
         board_index = s % self.maze_size
         row, col = self._index_to_coordinate(board_index)

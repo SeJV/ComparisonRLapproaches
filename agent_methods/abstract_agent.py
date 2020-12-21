@@ -22,7 +22,7 @@ class AbstractAgent:
     def act(self, observation: Union[np.ndarray, float, int]) -> Union[np.ndarray, float, int]:
         ...
 
-    def train(self, s_nextUnion: [np.ndarray, float, int], reward: float, done: bool) -> None:
+    def train(self, s_next: Union[np.ndarray, float, int], reward: float, done: bool) -> None:
         ...
 
     def episode_done(self, epsilon_reduction: float = 0, alpha_reduction: float = 0) -> None:

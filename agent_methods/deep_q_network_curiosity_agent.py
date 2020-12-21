@@ -1,4 +1,5 @@
 from typing import Optional, List, Tuple
+from gym import Env
 import numpy as np
 from agent_methods import DeepQNetworkAgent
 from tensorflow.keras.layers import Dense, Input, Flatten, Concatenate
