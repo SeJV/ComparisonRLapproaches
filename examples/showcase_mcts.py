@@ -15,5 +15,5 @@ mcts = MCTreeSearchAgent(env, playouts_per_action=100, playouts_per_simulation=1
 
 stats = train_agents(env, [mcts], training_episodes=1, repetitions=1)
 visualize_training_results_for_agents(stats, save_fig='mcts_on_small_maze.png',
-                                      train_for='small Maze environment')
+                                      train_for='small Maze environment', zero_zero_start=True)
 

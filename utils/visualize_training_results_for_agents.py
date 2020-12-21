@@ -14,7 +14,8 @@ COLORS = [
 ]
 
 
-def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=None, train_for='environment') -> None:
+def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=None, train_for='environment',
+                                          zero_zero_start: bool = False) -> None:
     """
     Giving stats resulted from train_agents function, this function creates an plot to showcase those stats.
     The average of reward per episodes is a thick line, the area between minimum and maximum is shown as light and
@@ -23,15 +24,16 @@ def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=
     :param stats_multiple_agents: return of train_agents function
     :param save_fig: if None, plot will get shown, else plot is stored as image with <save_fig> as filename
     :param train_for: The title of the plot will say '(rounded) training results for <train_for>'
+    :param zero_zero_start: starting the graphs of agents by 0 episodes and 0 reward
     """
     for agent_idx, agent_name in enumerate(stats_multiple_agents.keys()):
-        steps_per_repetition = []
-        rewards_per_repetition = []
-        epsilon_per_repetition = []
+        steps_per_repetition = [] if not zero_zero_start else [0]
+        rewards_per_repetition = [] if not zero_zero_start else [0]
+        epsilon_per_repetition = [] if not zero_zero_start else [0]
 
         for repetition in stats_multiple_agents[agent_name]:
             steps_per_repetition.append(repetition['steps'])
-            rewards_per_repetition.append(repetition['future_rewards'])
+            rewards_per_repetition.append(repetition['rewards'])
             epsilon_per_repetition.append(repetition['epsilon'])
 
         rewards_per_repetition = np.array(rewards_per_repetition)
@@ -51,7 +53,7 @@ def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=
         plt.plot(mean_rewards_per_episode, label=agent_name, color=color, linewidth=3)
 
     plt.grid()
-    plt.ylabel('sum of future_rewards')
+    plt.ylabel('sum of rewards')
     plt.xlabel('episodes')
     plt.legend(loc='upper left')
     plt.title(f'(rounded) training results for {train_for}')

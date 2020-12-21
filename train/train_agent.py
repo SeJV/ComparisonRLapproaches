@@ -18,7 +18,7 @@ def train_agent(env: Env, agent: AbstractAgent, training_episodes: int = 1000, m
     :param verbose: if true, information about steps per episode end, reward as well as epsilon and alpha are presented
     :return: statistics about the training per episode to analyse and visualize
     """
-    stats = {'steps': [], 'future_rewards': [], 'epsilon': [], 'alpha': []}
+    stats = {'steps': [], 'rewards': [], 'epsilon': [], 'alpha': []}
     episode = 1
     running_reward = 0
     for _ in range(training_episodes):
@@ -40,7 +40,7 @@ def train_agent(env: Env, agent: AbstractAgent, training_episodes: int = 1000, m
         agent.episode_done(epsilon_reduction=epsilon_red, alpha_reduction=alpha_red)
 
         stats['steps'].append(steps)
-        stats['future_rewards'].append(reward_sum)
+        stats['rewards'].append(reward_sum)
         stats['epsilon'].append(agent.epsilon)
         stats['alpha'].append(agent.alpha)
 
