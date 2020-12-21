@@ -21,7 +21,7 @@ def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=
     transparent color.
 
     :param stats_multiple_agents: return of train_agents function
-    :param save_fig: if None, plot will get shown, else plot is stored as image
+    :param save_fig: if None, plot will get shown, else plot is stored as image with <save_fig> as filename
     :param train_for: The title of the plot will say '(rounded) training results for <train_for>'
     """
     for agent_idx, agent_name in enumerate(stats_multiple_agents.keys()):
@@ -56,6 +56,6 @@ def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=
     plt.legend(loc='upper left')
     plt.title(f'(rounded) training results for {train_for}')
     if save_fig:
-        plt.savefig(save_fig)
+        plt.savefig('plots/' + save_fig)
     else:
         plt.show()
