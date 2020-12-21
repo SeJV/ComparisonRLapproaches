@@ -7,6 +7,9 @@ from utils import visualize_training_results_for_agents
 The following is a showcase for the ability of Monte Carlo Tree Search to choose an action
 due to a action-state tree build and simulations of those nodes. This works also in stochastic 
 state transitions. 
+
+It only needs one "training"-episode, because it doesn't train at all. With enough consideration
+it can choose the optimal action for given state. 
 """
 
 
