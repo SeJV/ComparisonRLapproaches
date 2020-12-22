@@ -16,7 +16,7 @@ env = FrozenLakeEnv(map_name='8x8')
 ```
 
 To test some reinforcement learning methods, you can either implement your own method and comply with the abstract_agent
-from `agent_methods`. With their class implementation it is also described, for what type of environment they should
+from `rl_methods`. With their class implementation it is also described, for what type of environment they should
 work. 
 
 ```python
