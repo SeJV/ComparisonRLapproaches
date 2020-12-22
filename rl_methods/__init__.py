@@ -1,6 +1,7 @@
 from rl_methods.abstract_agent import AbstractAgent
 from rl_methods.dynamic_programming_agent import DPAgent
 from rl_methods.sarsa_agent import SarsaAgent
+from rl_methods.n_td_prediction_agent import NStepTDPredictionAgent
 from rl_methods.q_learning_agent import QLearningAgent
 from rl_methods.double_q_learning_agent import DoubleQLearningAgent
 from rl_methods.mc_control_agent import MCControlAgent
