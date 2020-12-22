@@ -63,7 +63,7 @@ class DeepQNetworkAgent(AbstractAgent):
     def fast_predict(self, inp: np.ndarray) -> np.ndarray:
         weights = []
         for layer in range(2, len(self.nn_shape) + 3):  # input and flatten layer will get ignored, action layer added
-            weights.append(self.target_model.layers[layer].get_weights())
+            weights.append(self.q_model.layers[layer].get_weights())
 
         res = inp.flatten()
         for w in weights[:-1]:
