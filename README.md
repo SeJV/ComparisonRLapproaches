@@ -20,7 +20,7 @@ from `agent_methods`. With their class implementation it is also described, for 
 work. 
 
 ```python
-from agent_methods import SarsaAgent, QLearningAgent
+from rl_methods import SarsaAgent, QLearningAgent
 sarsa_agent = SarsaAgent(env)
 q_learning_agent = QLearningAgent(env)
 ``` 

@@ -1,7 +1,7 @@
 from typing import Optional
 from gym import Env
 import numpy as np
-from agent_methods import AbstractAgent
+from rl_methods import AbstractAgent
 
 
 class QLearningAgent(AbstractAgent):

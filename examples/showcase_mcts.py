@@ -1,5 +1,5 @@
 from environments import FrozenLakeEnv
-from agent_methods import MCTreeSearchAgent, DoubleQLearningAgent
+from rl_methods import MCTreeSearchAgent, DoubleQLearningAgent
 from train import train_agents
 from utils import visualize_training_results_for_agents
 

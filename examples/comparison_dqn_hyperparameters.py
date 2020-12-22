@@ -1,5 +1,5 @@
 from environments import CartPoleEnv
-from agent_methods import DeepQNetworkAgent
+from rl_methods import DeepQNetworkAgent
 from train import train_agents
 from utils import visualize_training_results_for_agents
 
