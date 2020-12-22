@@ -1,5 +1,5 @@
 from environments import FrozenLakeEnv
-from agent_methods import MCTreeSearchAgent
+from agent_methods import MCTreeSearchAgent, DoubleQLearningAgent
 from train import train_agents
 from utils import visualize_training_results_for_agents
 
@@ -14,9 +14,16 @@ it can choose the optimal action for given state.
 
 
 env = FrozenLakeEnv()
-mcts = MCTreeSearchAgent(env, playouts_per_action=100000, playouts_per_simulation=100, gamma=0.9)
 
-stats = train_agents(env, [mcts], training_episodes=1, repetitions=1)
-visualize_training_results_for_agents(stats, save_fig='mcts_on_small_maze.png',
-                                      train_for='small Maze environment', zero_zero_start=True)
+rollout_policy_agent = DoubleQLearningAgent(env, epsilon_start=0.3, alpha_start=0.001, gamma=0.99)
+mcts = MCTreeSearchAgent(env,
+                         amount_test_probability=50,
+                         playouts_per_action=20000,
+                         promising_children_playouts=100,
+                         gamma=0.99,
+                         rollout_policy_agent=rollout_policy_agent)
+
+stats = train_agents(env, [mcts], training_episodes=1, repetitions=1, max_step_per_episode=30)
+visualize_training_results_for_agents(stats, save_fig='mcts_on_frozen_lake.png',
+                                      train_for='Frozen Lake 4x4', zero_zero_start=True)
 

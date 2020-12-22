@@ -1,12 +1,11 @@
 from typing import Optional, List
 import copy
 import random
-import time
 from math import sqrt, log
 import numpy as np
 from gym import Env
 from gym.envs.toy_text.discrete import DiscreteEnv
-from agent_methods import AbstractAgent
+from agent_methods import AbstractAgent, DoubleQLearningAgent
 
 
 BIG_NUMBER = 999999999999999999999
@@ -47,18 +46,22 @@ class MCTreeSearchAgent(AbstractAgent):
     Reward function must be deterministic
     """
     def __init__(self, env: DiscreteEnv, gamma: float = 0.99, amount_test_probability: int = 1,
-                 playouts_per_simulation: int = 100, playouts_per_action: int = 10000, c: float = 1.41,
-                 name: str = 'MCTreeSearchAgent'):
+                 playouts_per_action: int = 10000, promising_children_playouts: int = 100, c: float = 1.41,
+                 rollout_policy_agent: Optional[AbstractAgent] = None, name: str = 'MCTreeSearchAgent'):
         super().__init__(env, name=name)
         self.gamma = gamma
+        # if env is stochastic, how often should an action be made, to approximate probability for next state
         self.amount_test_probability = amount_test_probability
-        self.playouts_per_simulation = playouts_per_simulation
-        self.playouts_per_action = playouts_per_action
-        self.c = c  # exploration factor of uct formula, sqrt(2) in literature, but can be changed for env
+        self.playouts_per_action = playouts_per_action  # for given state, how many playouts in total for the decision
+        self.promising_children_playouts = promising_children_playouts  # how many playouts per simulation of leaf node
+        self.c = c  # exploration factor of uct formula, sqrt(2) in literature, but can be changed depending on env
 
         self.a = None  # action which was chosen by act function
         self.root_node: Optional[_Node] = None
         self.simulation_counter = 0  # counts amount of simulation playouts
+
+        # Agent to choose actions in simulation. Epsilon and Alpha won't get reduced, son min's are unnecessary
+        self.rollout_policy_agent = rollout_policy_agent
 
     def reset(self) -> None:
         self.a = None  # action which was chosen by act function
@@ -99,25 +102,29 @@ class MCTreeSearchAgent(AbstractAgent):
             rnd_child: _Node = random.choice(promising_leaf.children)
             sum_of_rewards = 0
             discount = 1
-            for _ in range(self.playouts_per_simulation):
+            for _ in range(self.promising_children_playouts):
                 self.simulation_counter += 1
                 env_simulated = rnd_child.env_in_state
+                state = rnd_child.state
                 done = rnd_child.done
                 steps = 0
                 while not done and steps < 100:
-                    _, reward, done, _ = env_simulated.step(env_simulated.action_space.sample())
+                    action = self.rollout_policy_agent.act(state)
+                    state, reward, done, _ = env_simulated.step(action)
+                    self.rollout_policy_agent.train(state, reward, done)
+
                     sum_of_rewards += discount * reward
                     discount *= self.gamma
                     steps += 1
 
-            rnd_child.visits += self.playouts_per_simulation
+            rnd_child.visits += self.promising_children_playouts
             rnd_child.future_rewards += sum_of_rewards
             # 4. Backpropagation: Update all parent nodes in the chain
             update_node = rnd_child
             discount = self.gamma
             while update_node.parent:
                 update_node = update_node.parent
-                update_node.visits += self.playouts_per_simulation
+                update_node.visits += self.promising_children_playouts
                 update_node.future_rewards += discount * sum_of_rewards
                 discount *= self.gamma
 
@@ -135,6 +142,11 @@ class MCTreeSearchAgent(AbstractAgent):
             action_list.append(action_estimated_reward)
 
         self.a = int(np.argmax(action_list))
+
+        print(action_list)
+        self.simulation_counter = 0  # reset simulation_counter for next action decision
+        self.env.render()
+
         return self.a
 
     def train(self, s_next: int, reward: float, done: bool) -> None:

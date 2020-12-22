@@ -15,14 +15,14 @@ class DoubleQLearningAgent(QLearningAgent):
         self.state_space = self.env.observation_space.n
         self.action_space = self.env.action_space.n
 
-        self.q_tables = np.array([
+        self.q_table = np.array([
             np.random.rand(self.state_space, self.action_space) * 0.01,
             np.random.rand(self.state_space, self.action_space) * 0.01
-        ])
+        ])  # two instead of one q-table
 
     def reset(self) -> None:
         super().reset()
-        self.q_tables = np.array([
+        self.q_table = np.array([
             np.random.rand(self.state_space, self.action_space) * 0.01,
             np.random.rand(self.state_space, self.action_space) * 0.01
         ])
@@ -31,18 +31,18 @@ class DoubleQLearningAgent(QLearningAgent):
         self.s = observation
 
         if np.random.random() > self.epsilon:
-            q_table_sum = np.sum(self.q_tables, axis=0)
+            q_table_sum = np.sum(self.q_table, axis=0)
             self.a = np.argmax(q_table_sum[observation])
         else:
             self.a = np.random.randint(self.action_space)
         return self.a
 
     def train(self, s_next: int, reward: float, done: bool) -> None:
-        # 50% probability the following, otherwise switch q_tables
+        # 50% probability the following, otherwise switch q_table
 
         update_q_table = np.random.randint(0, 2)
-        q1 = self.q_tables[update_q_table]
-        q2 = self.q_tables[1 - update_q_table]
+        q1 = self.q_table[update_q_table]
+        q2 = self.q_table[1 - update_q_table]
 
         q2_next = q2[s_next, np.argmax(q1[s_next])] if not done else 0
 
@@ -51,4 +51,4 @@ class DoubleQLearningAgent(QLearningAgent):
             reward + q2_next - q1[self.s, self.a]
         )
 
-        self.q_tables = np.array([q1, q2])
+        self.q_table = np.array([q1, q2])
