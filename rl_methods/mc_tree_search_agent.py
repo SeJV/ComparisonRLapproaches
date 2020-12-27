@@ -1,7 +1,8 @@
-from typing import Optional, List
+from typing import Optional, List, Iterator
 import copy
 import random
 from math import sqrt, log
+import json
 import numpy as np
 from gym import Env
 from gym.envs.toy_text.discrete import DiscreteEnv
@@ -12,26 +13,30 @@ BIG_NUMBER = 999999999999999999999
 
 
 class _Node:
-    def __init__(self, env_in_state: Env, state:  Optional[int] = None, action: Optional[int] = None,
-                 reward: float = 0, done: bool = False, parent: Optional[object] = None):
-        self._env_in_state = copy.deepcopy(env_in_state)  # environment with state that this node represents
-        self.state = state
-        self.action = action  # action which lead to this state
-        self.reward = reward  # reward of state-action-next state tuple
-        self.done = done  # end of episode
+    def __init__(self, action: Optional[int] = None, parent: Optional[object] = None):
+        self.action = action  # action taken
         self.parent: Optional[_Node] = parent  # states of time step before
-        self.probability: float = 0
         self.future_rewards: float = 0
+        self.reward: float = 0
         self.visits: int = 0
         self.children: List[_Node] = []  # possible following state, action pairs
 
-        self.a = None  # remember chosen action until train call
+    def get_action_chain(self) -> List[int]:
+        """
+        :return: list of actions, from root node, to this action-node
+        """
+        action_chain = [self.action] if self.action else []
+        node_to_add_action = self.parent
+        while node_to_add_action and node_to_add_action.parent:
+            action_chain.append(node_to_add_action.action)
+            node_to_add_action = node_to_add_action.parent
 
-    @property
-    def env_in_state(self):
-        return copy.deepcopy(self._env_in_state)
+        return list(reversed(action_chain))
 
-    def get_depth(self):
+    def get_depth(self) -> int:
+        """
+        :return: depth of node from root
+        """
         depth = 1
         depth_of_children = []
         for child in self.children:
@@ -39,22 +44,34 @@ class _Node:
         depth += max(depth_of_children) if depth_of_children else 0
         return depth
 
+    def generate_tree(self) -> dict:
+        """
+        for easier debugging, generate tree as json
+        """
+        root_dict = {}
+        for child in self.children:
+            root_dict[child.action] = {
+                'visits': child.visits,
+                'future_rewards': child.future_rewards,
+                'children': child.generate_tree()
+            }
+        return root_dict
+
 
 class MCTreeSearchAgent(AbstractAgent):
     """
-    For stochastic discrete environments, expected values, weighted by their probability are used
-    Reward function must be deterministic
+
     """
-    def __init__(self, env: DiscreteEnv, gamma: float = 0.99, amount_test_probability: int = 1,
-                 playouts_per_action: int = 10000, promising_children_playouts: int = 100, c: float = 1.41,
+    def __init__(self, env: DiscreteEnv, gamma: float = 0.99, playouts_per_action: int = 10000,
+                 promising_children_playouts: int = 100, c: float = 1.41, alpha: float = 0.01,
                  rollout_policy_agent: Optional[AbstractAgent] = None, name: str = 'MCTreeSearchAgent'):
         super().__init__(env, name=name)
         self.gamma = gamma
-        # if env is stochastic, how often should an action be made, to approximate probability for next state
-        self.amount_test_probability = amount_test_probability
+
         self.playouts_per_action = playouts_per_action  # for given state, how many playouts in total for the decision
         self.promising_children_playouts = promising_children_playouts  # how many playouts per simulation of leaf node
         self.c = c  # exploration factor of uct formula, sqrt(2) in literature, but can be changed depending on env
+        self.alpha = alpha  # update value for running mean
 
         self.a = None  # action which was chosen by act function
         self.root_node: Optional[_Node] = None
@@ -68,109 +85,101 @@ class MCTreeSearchAgent(AbstractAgent):
         self.root_node: Optional[_Node] = None
         self.simulation_counter = 0  # counts amount of simulation playouts
 
+    def get_possible_actions(self, node: _Node) -> range:
+        # return actions possible for env
+        return range(self.env.action_space.n)
+
     def act(self, observation: int) -> int:
         while self.simulation_counter < self.playouts_per_action:
             # 1. Selection: choose promising leaf node, that is not end of game
             if self.root_node:
                 promising_leaf = self.choose_promising_leaf_node()
             else:
-                promising_leaf = self.root_node = _Node(self.env)
+                promising_leaf = self.root_node = _Node()
             # 2. Expansion: expand promising node
-            # test for amount_test_probability each action and count follow states, to approximate probability
-            # nodes get appended with deepcopy of the environment, so rollouts can be made
-            action_state_counting = dict()
-            for action in range(self.env.action_space.n):
-                action_state_counting[action] = dict()
-                for _ in range(self.amount_test_probability):
-                    env_of_leaf = promising_leaf.env_in_state
-                    next_state, reward, done, _ = env_of_leaf.step(action)
-
-                    if next_state not in action_state_counting[action].keys():
-                        action_state_counting[action][next_state] = 1
-                        promising_leaf.children.append(
-                            # append (env, action) as child
-                            _Node(env_of_leaf, state=next_state, action=action, reward=reward,
-                                  done=done, parent=promising_leaf)
-                        )
-                    else:
-                        # count occurrences of state after action
-                        action_state_counting[action][env_of_leaf.s] += 1
-                for child in promising_leaf.children:
-                    if child.action == action:
-                        child.probability = action_state_counting[action][child.state] / self.amount_test_probability
+            for action in self.get_possible_actions(promising_leaf):
+                promising_leaf.children.append(_Node(action=action, parent=promising_leaf))
             # 3. Simulation: choose one of the new expanded nodes, simulate playouts
-            rnd_child: _Node = random.choice(promising_leaf.children)
-            sum_of_rewards = 0
-            discount = 1
+            actions_to_promising = promising_leaf.get_action_chain()
+
             for _ in range(self.promising_children_playouts):
+                # start from root node, execute action until the node
+                root_env_copy = copy.deepcopy(self.env)
+                is_done = False
+                for action in actions_to_promising:
+                    _, _, done, _ = root_env_copy.step(action)
+                    is_done = is_done or done
                 self.simulation_counter += 1
-                env_simulated = rnd_child.env_in_state
-                state = rnd_child.state
-                done = rnd_child.done
-                steps = 0
-                while not done and steps < 100:
-                    action = self.rollout_policy_agent.act(state)
-                    state, reward, done, _ = env_simulated.step(action)
-                    self.rollout_policy_agent.train(state, reward, done)
 
-                    sum_of_rewards += discount * reward
-                    discount *= self.gamma
-                    steps += 1
+                rnd_child: _Node = random.choice(promising_leaf.children)
+                if not is_done:
+                    discount = self.gamma
 
-            rnd_child.visits += self.promising_children_playouts
-            rnd_child.future_rewards += sum_of_rewards
-            # 4. Backpropagation: Update all parent nodes in the chain
-            update_node = rnd_child
-            discount = self.gamma
-            while update_node.parent:
-                update_node = update_node.parent
-                update_node.visits += self.promising_children_playouts
-                update_node.future_rewards += discount * sum_of_rewards
-                discount *= self.gamma
+                    state, reward, done, _ = root_env_copy.step(rnd_child.action)
+                    if rnd_child.reward != 0:
+                        rnd_child.reward = (1 - self.alpha) * rnd_child.reward + self.alpha * reward
+                    else:
+                        rnd_child.reward = reward
+                    sum_of_future_rewards = 0
+                    steps = 0
+                    while not done and steps < 500:
+                        action = self.rollout_policy_agent.act(state)
+                        state, reward, done, _ = root_env_copy.step(action)
+                        self.rollout_policy_agent.train(state, reward, done)
+
+                        sum_of_future_rewards += discount * reward
+                        discount *= self.gamma
+                        steps += 1
+
+                    rnd_child.visits += 1
+                    if rnd_child.future_rewards != 0:
+                        rnd_child.future_rewards = (
+                            (1 - self.alpha) * rnd_child.future_rewards + self.alpha * sum_of_future_rewards)
+                    else:
+                        rnd_child.future_rewards = sum_of_future_rewards
+                # 4. Backpropagation: Update all parent nodes in the chain
+                update_node = rnd_child
+                while update_node.parent:
+                    update_node = update_node.parent
+                    update_node.visits += 1
 
         #  choose action with highest estimated reward
-        action_list = []
-        for action in range(self.env.action_space.n):
-            #  get all nodes with this action and sum with their probability
-            nodes_with_action = filter(lambda node: node.action == action, self.root_node.children)
-            action_estimated_reward = 0
-            for node in nodes_with_action:
-                if node.visits:
-                    action_estimated_reward += node.probability * (node.reward + (node.future_rewards / node.visits))
-                elif node.done:
-                    action_estimated_reward += node.probability * node.reward
-            action_list.append(action_estimated_reward)
-
-        self.a = int(np.argmax(action_list))
-
-        print(action_list)
+        children_values = self._get_child_values()
+        self.a = int(np.argmax(children_values))
         self.simulation_counter = 0  # reset simulation_counter for next action decision
-        self.env.render()
-
         return self.a
 
     def train(self, s_next: int, reward: float, done: bool) -> None:
-        nodes_with_action_and_state = list(filter(lambda node: node.action == self.a and node.env_in_state.s == s_next,
-                                                  self.root_node.children))
-        if len(nodes_with_action_and_state) == 1:
-            self.root_node = nodes_with_action_and_state[0]
+        if self.root_node.children:
+            self.root_node = next(filter(lambda child: child.action == self.a, self.root_node.children))
             self.root_node.parent = None
         else:  # either state was not detected in expansion phase, or something went wrong
-            self.root_node = _Node(self.env)
+            self.root_node = _Node()
 
-    def choose_promising_leaf_node(self):
+    def choose_promising_leaf_node(self) -> _Node:
         node = self.root_node
         while node.children:
-            #  choose child with highest uct value
+            #  choose node with highest uct value
             children = sorted(node.children, key=self.uct, reverse=True)
-            node = children[0]  # child with highest uct value
+            node = children[0]  # node with highest uct value
         return node
 
-    def uct(self, child: _Node) -> float:
-        if child.done:
-            return -BIG_NUMBER
-        elif child.visits == 0:
+    def uct(self, node: _Node) -> float:
+        if node.visits == 0:
             return BIG_NUMBER
         else:
-            return child.future_rewards / child.visits + self.c * sqrt(log(child.parent.visits) / child.visits)
+            return self._get_node_value(node) + self.c * sqrt(log(node.parent.visits) / node.visits)
 
+    def _get_child_values(self) -> List[float]:
+        child_values = []
+        for child in self.root_node.children:
+            child_values.append(self._get_node_value(child))
+        return child_values
+
+    def _get_node_value(self, node: _Node) -> float:
+        node_value = node.reward
+        if not node.children:
+            return node_value + node.future_rewards
+        else:
+            child_values = list([self._get_node_value(child) for child in node.children])
+            return node_value + self.gamma * max(child_values)
