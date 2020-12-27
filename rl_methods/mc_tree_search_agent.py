@@ -62,16 +62,15 @@ class MCTreeSearchAgent(AbstractAgent):
     """
 
     """
-    def __init__(self, env: DiscreteEnv, gamma: float = 0.99, playouts_per_action: int = 10000,
-                 promising_children_playouts: int = 100, c: float = 1.41, alpha: float = 0.01,
+    def __init__(self, env: DiscreteEnv, alpha: float = 0.01, alpha_min: Optional[float] = None, gamma: float = 0.99,
+                 playouts_per_action: int = 10000, promising_children_playouts: int = 100, c: float = 1.41,
                  rollout_policy_agent: Optional[AbstractAgent] = None, name: str = 'MCTreeSearchAgent'):
-        super().__init__(env, name=name)
+        super().__init__(env, alpha=alpha, alpha_min=alpha_min, name=name)
         self.gamma = gamma
 
         self.playouts_per_action = playouts_per_action  # for given state, how many playouts in total for the decision
         self.promising_children_playouts = promising_children_playouts  # how many playouts per simulation of leaf node
         self.c = c  # exploration factor of uct formula, sqrt(2) in literature, but can be changed depending on env
-        self.alpha = alpha  # update value for running mean
 
         self.a = None  # action which was chosen by act function
         self.root_node: Optional[_Node] = None

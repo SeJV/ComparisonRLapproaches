@@ -11,9 +11,9 @@ As testing environment the Cart Pole challenge ist chosen with continuous observ
 
 env = CartPoleEnv()
 
-dqn_agent0003 = DeepQNetworkAgent(env, alpha_start=0.0003, nn_shape=[32, 32], train_size=1024, name='start alpha=0.0003')
-dqn_agent001 = DeepQNetworkAgent(env, alpha_start=0.001, nn_shape=[32, 32], train_size=1024, name='start alpha=0.001')
-dqn_agent003 = DeepQNetworkAgent(env, alpha_start=0.003, nn_shape=[32, 32], train_size=1024, name='start alpha=0.003')
+dqn_agent0003 = DeepQNetworkAgent(env, alpha=0.0003, nn_shape=[32, 32], train_size=1024, name='start alpha=0.0003')
+dqn_agent001 = DeepQNetworkAgent(env, alpha=0.001, nn_shape=[32, 32], train_size=1024, name='start alpha=0.001')
+dqn_agent003 = DeepQNetworkAgent(env, alpha=0.003, nn_shape=[32, 32], train_size=1024, name='start alpha=0.003')
 
 stats = train_agents(env, [dqn_agent0003, dqn_agent001, dqn_agent003],
                      training_episodes=5000, repetitions=1)

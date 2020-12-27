@@ -5,10 +5,10 @@ from rl_methods import AbstractAgent
 
 
 class SarsaAgent(AbstractAgent):
-    def __init__(self, env: Env, epsilon_start: float = 1.0, epsilon_min: Optional[float] = None,
-                 alpha_start: float = 0.01, alpha_min: Optional[float] = None, gamma: float = 0.99,
+    def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: Optional[float] = None,
+                 alpha: float = 0.01, alpha_min: Optional[float] = None, gamma: float = 0.99,
                  name: str = 'SarsaAgent'):
-        super().__init__(env=env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, alpha_start=alpha_start,
+        super().__init__(env=env, epsilon=epsilon, epsilon_min=epsilon_min, alpha=alpha,
                          alpha_min=alpha_min, name=name)
         self.gamma = gamma
 

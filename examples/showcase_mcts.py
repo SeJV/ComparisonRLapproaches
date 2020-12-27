@@ -15,7 +15,7 @@ it can choose the optimal action for given state.
 
 env = FrozenLakeEnv()
 
-rollout_policy_agent = DoubleQLearningAgent(env, epsilon_start=0.2, alpha_start=0.001)
+rollout_policy_agent = DoubleQLearningAgent(env, epsilon=0.2, alpha=0.001)
 mcts = MCTreeSearchAgent(env,
                          playouts_per_action=500,
                          promising_children_playouts=10,

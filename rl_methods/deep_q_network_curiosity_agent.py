@@ -15,11 +15,11 @@ class DeepQNetworkCuriosityAgent(DeepQNetworkAgent):
         from pathlib import Path
         Path("/my/directory").mkdir(parents=True, exist_ok=True)
     """
-    def __init__(self, env: Env, epsilon_start: float = 1.0, epsilon_min: Optional[float] = None,
-                 alpha_start: float = 0.01, alpha_min: Optional[float] = None, gamma: float = 0.99,
+    def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: Optional[float] = None,
+                 alpha: float = 0.01, alpha_min: Optional[float] = None, gamma: float = 0.99,
                  train_size: int = 512, nn_shape: List[int] = (126, 126), memory_len: int = 500000,
                  auto_store_models: bool = False, icm_scale: float = 1, name='DeepQNetworkCuriosityAgent'):
-        super().__init__(env, epsilon_start=epsilon_start, epsilon_min=epsilon_min, alpha_start=alpha_start,
+        super().__init__(env, epsilon=epsilon, epsilon_min=epsilon_min, alpha=alpha,
                          alpha_min=alpha_min, gamma=gamma, train_size=train_size, nn_shape=nn_shape,
                          memory_len=memory_len, auto_store_models=auto_store_models, name=name)
 
