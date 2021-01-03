@@ -1,6 +1,6 @@
-from environments import FrozenLakeEnv
+from environments import MazeEnv
 from rl_methods import MCTreeSearchAgent, DoubleQLearningAgent
-from train import train_agents
+from train import train_agents, train_agent
 from utils import visualize_training_results_for_agents
 
 """
@@ -13,15 +13,20 @@ it can choose the optimal action for given state.
 """
 
 
-env = FrozenLakeEnv()
+env = MazeEnv(size='m')
 
-rollout_policy_agent = DoubleQLearningAgent(env, epsilon=0.2, alpha=0.001)
+rollout_policy_agent = DoubleQLearningAgent(env, epsilon=1, epsilon_min=0.6, alpha=0.001)
+train_agent(env, rollout_policy_agent, training_episodes=10000)
+# this trains actually just to the point, that the agent reaches the goal without finding any treasures
+
+rollout_policy_agent.epsilon = 0.1
+rollout_policy_agent.alpha = 0.0001
 mcts = MCTreeSearchAgent(env,
-                         playouts_per_action=500,
-                         promising_children_playouts=10,
+                         playouts_per_action=2000,
                          rollout_policy_agent=rollout_policy_agent)
+# however, the mcts agent still finds the path to the treasures, because of his action tree
 
-stats = train_agents(env, [mcts], training_episodes=1, repetitions=1, max_step_per_episode=30)
-visualize_training_results_for_agents(stats, save_fig='mcts_on_frozen_lake.png',
-                                      train_for='Frozen Lake 4x4', zero_zero_start=True)
+stats = train_agents(env, [mcts], training_episodes=1, repetitions=1, render=True)
+visualize_training_results_for_agents(stats, save_fig='mcts_on_medium_maze.png',
+                                      train_for='medium Maze', zero_zero_start=True)
 

@@ -5,7 +5,8 @@ from rl_methods import AbstractAgent
 
 
 def train_agent(env: Env, agent: AbstractAgent, training_episodes: int = 1000, max_step_per_episode: int = 1000,
-                penalty_for_reaching_max_step: float = 1, verbose: bool = True) -> Dict[str, List]:
+                penalty_for_reaching_max_step: float = 1, verbose: bool = True, render: bool = False
+                ) -> Dict[str, List]:
     """
     Train a single agent for the amount of training steps in a environment. Each training step is one episode.
     Each episode the environment gets reset. Epsilon and alpha of the agent will get linearly reduced to their min
@@ -17,9 +18,10 @@ def train_agent(env: Env, agent: AbstractAgent, training_episodes: int = 1000, m
     :param max_step_per_episode: in the case of infinitely long running episodes
     :param penalty_for_reaching_max_step: If agent reaches max step, penalty given, by which reward is reduced
     :param verbose: if true, information about steps per episode end, reward as well as epsilon and alpha are presented
+    :param render: if true, training episodes are rendered
     :return: statistics about the training per episode to analyse and visualize
     """
-    stats = {'steps': [], 'future_rewards': [], 'epsilon': [], 'alpha': []}
+    stats = {'steps': [], 'rewards': [], 'epsilon': [], 'alpha': []}
     episode = 1
     running_reward = 0
     for _ in range(training_episodes):
@@ -31,6 +33,8 @@ def train_agent(env: Env, agent: AbstractAgent, training_episodes: int = 1000, m
             steps += 1
             action = agent.act(state)
             state, reward, done, _ = env.step(action)
+            if render:
+                env.render()
             reward_sum += reward
             if steps == max_step_per_episode:
                 reward -= penalty_for_reaching_max_step
@@ -43,7 +47,7 @@ def train_agent(env: Env, agent: AbstractAgent, training_episodes: int = 1000, m
         agent.episode_done(epsilon_reduction=epsilon_red, alpha_reduction=alpha_red)
 
         stats['steps'].append(steps)
-        stats['future_rewards'].append(reward_sum)
+        stats['rewards'].append(reward_sum)
         stats['epsilon'].append(agent.epsilon)
         stats['alpha'].append(agent.alpha)
 
