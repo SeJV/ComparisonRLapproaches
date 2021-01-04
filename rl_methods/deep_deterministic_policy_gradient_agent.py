@@ -2,13 +2,10 @@ from typing import Optional, Tuple, List
 import numpy as np
 from numpy.random import default_rng
 from gym import Env
-from gym.spaces import Box, Discrete
-from collections import deque
 import tensorflow as tf
-from tensorflow.keras.layers import Dense, Input, Flatten, Concatenate
-from tensorflow.keras.models import Model, load_model, Sequential
+from tensorflow.keras.layers import Dense, Input, Concatenate
+from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.optimizers import Nadam
-from tensorflow.keras.utils import to_categorical
 from rl_methods import AbstractAgent
 
 
@@ -59,11 +56,6 @@ class OUActionNoise:
         """
         Random noise generator for single values
         # Formula taken from https://www.wikipedia.org/wiki/Ornstein-Uhlenbeck_process.
-        :param mean:
-        :param std_deviation:
-        :param theta:
-        :param dt:
-        :param x_initial:
         """
         self.theta = theta
         self.mean = mean
@@ -81,7 +73,7 @@ class OUActionNoise:
             + self.std_dev * np.sqrt(self.dt) * rng.normal()
         )
         # Store x into x_prev
-        # Makes next noise dependent on current one
+        # Makes next noise dependent on previous
         self.x_prev = x
         return x
 
@@ -167,8 +159,7 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
         action = np.squeeze(self.actor_model(observation))
 
         # add noise to action for exploration, scaled by epsilon
-        action = action + self.epsilon * self.ou_noise()
-
+        action = np.expand_dims(action + self.epsilon * self.ou_noise(), axis=0)
         # Clip action to legal bounds
         self.a = np.clip(action, self.lower_bound, self.upper_bound)
         return self.a
@@ -221,14 +212,17 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
 
         self.critic_model.fit([states, actions], estimated_q_values, verbose=False)
 
-        def actor_loss_function(_, y_predicted):
-            critic_value = self.critic_model([states, y_predicted], training=True)
+        with tf.GradientTape() as tape:
+            predicted_actions = self.actor_model(states, training=True)
+            critic_value = self.critic_model([states, predicted_actions], training=False)
             # Used `-value` as we want to maximize the value given
             # by the critic for our actions
-            return -tf.math.reduce_mean(critic_value)
+            actor_loss = -tf.math.reduce_mean(critic_value)
 
-        self.actor_model.compile(optimizer=self.actor_optimizer, loss=actor_loss_function)
-        self.actor_model.fit(states)
+            actor_grad = tape.gradient(actor_loss, self.actor_model.trainable_variables)
+            self.actor_optimizer.apply_gradients(
+                zip(actor_grad, self.actor_model.trainable_variables)
+            )
 
     def _build_actor_model(self) -> Model:
         # Initialize weights between -3e-3 and 3-e3, so first result won't be -1 or 1 and gradient is not zero
