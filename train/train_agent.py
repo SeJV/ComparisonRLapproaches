@@ -40,11 +40,7 @@ def train_agent(env: Env, agent: AbstractAgent, training_episodes: int = 1000, m
                 reward -= penalty_for_reaching_max_step
             agent.train(state, reward, done)
 
-        # epsilon min will get reached at the last 20 percentile of training steps
-        epsilon_red = (1 / (training_episodes * 0.8)) * (agent.epsilon_start - agent.epsilon_min)
-        # alpha min will get reached at the and approached linear
-        alpha_red = (1 / training_episodes) * (agent.alpha_start - agent.alpha_min)
-        agent.episode_done(epsilon_reduction=epsilon_red, alpha_reduction=alpha_red)
+        agent.episode_done()
 
         stats['steps'].append(steps)
         stats['rewards'].append(reward_sum)

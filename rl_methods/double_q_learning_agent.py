@@ -6,10 +6,10 @@ from rl_methods import QLearningAgent
 
 class DoubleQLearningAgent(QLearningAgent):
     def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: Optional[float] = None,
-                 alpha: float = 0.01, alpha_min: Optional[float] = None, gamma: float = 0.99,
-                 name: str = 'DoubleQLearningAgent'):
-        super().__init__(env, epsilon=epsilon, epsilon_min=epsilon_min, alpha=alpha,
-                         alpha_min=alpha_min, gamma=gamma, name=name)
+                 epsilon_reduction: float = 0.0, alpha: float = 0.01, alpha_min: Optional[float] = None,
+                 alpha_reduction: float = 0.0, gamma: float = 0.99, name: str = 'DoubleQLearningAgent'):
+        super().__init__(env, epsilon=epsilon, epsilon_min=epsilon_min, epsilon_reduction=epsilon_reduction,
+                         alpha=alpha, alpha_min=alpha_min, alpha_reduction=alpha_reduction, gamma=gamma, name=name)
 
         # only discrete environments possible
         self.state_space = self.env.observation_space.n

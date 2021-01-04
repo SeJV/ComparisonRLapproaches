@@ -9,7 +9,7 @@ from tensorflow.keras.optimizers import Nadam
 from rl_methods import AbstractAgent
 
 
-class ReplayBuffer:
+class _ReplayBuffer:
     def __init__(self, buffer_size: int = 100000, train_size: int = 64, observation_space: int = None,
                  action_space: int = None):
         self.buffer_size = buffer_size
@@ -51,8 +51,8 @@ class ReplayBuffer:
         return state_batch, action_batch, reward_batch, next_state_batch, done_batch
 
 
-class OUActionNoise:
-    def __init__(self, mean=0, std_deviation=0.2, theta=0.15, dt=1e-2, x_initial=None):
+class _OUActionNoise:
+    def __init__(self, mean=0, std_deviation=1, theta=1, dt=1e-2, x_initial=None):
         """
         Random noise generator for single values
         # Formula taken from https://www.wikipedia.org/wiki/Ornstein-Uhlenbeck_process.
@@ -82,9 +82,10 @@ class OUActionNoise:
 
 
 class DeepDeterministicPolicyGradientAgent(AbstractAgent):
-    def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: Optional[float] = None, alpha: float = 0.01,
-                 alpha_min: Optional[float] = None, gamma: float = 0.99, train_size: int = 512, tau: float = 0.005,
-                 actor_shape: List[int] = (256, 256), critic_shape: dict = None, buffer_size: int = 100000,
+    def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: Optional[float] = None,
+                 epsilon_reduction: float = 0.0, alpha: float = 0.01, alpha_min: Optional[float] = None,
+                 alpha_reduction: float = 0.0, gamma: float = 0.99, train_size: int = 512, tau: float = 0.005,
+                 actor_shape: List[int] = (64, 64), critic_shape: dict = None, buffer_size: int = 100000,
                  auto_store_models: bool = False, name: str = 'DDPGAgent'):
         """
         This implementation follows closely https://arxiv.org/pdf/1509.02971.pdf and
@@ -101,13 +102,13 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
         :param buffer_size: Size of replay buffer, where replay information is stored
         :param auto_store_models: if true, models of actor and critic will be stored after 10 replays
         """
-        super().__init__(env, epsilon=epsilon, epsilon_min=epsilon_min, alpha=alpha,
-                         alpha_min=alpha_min, name=name)
+        super().__init__(env, epsilon=epsilon, epsilon_min=epsilon_min, epsilon_reduction=epsilon_reduction,
+                         alpha=alpha, alpha_min=alpha_min, alpha_reduction=alpha_reduction, name=name)
         self.gamma = gamma
         self.train_size = train_size
         self.actor_shape = actor_shape
         self.critic_shape: dict = critic_shape if critic_shape is not None else {
-            'state_path': [16, 32], 'action_path': [32], 'conc_path': [64, 64]
+            'state_path': [32, 16], 'action_path': [32], 'conc_path': [32, 32]
         }
         self.buffer_size = buffer_size
         self.auto_store_models = auto_store_models
@@ -121,8 +122,8 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
         self.upper_bound: float = self.env.action_space.high[0]
         self.lower_bound: float = self.env.action_space.low[0]
 
-        self.buffer = ReplayBuffer(buffer_size=buffer_size, train_size=self.train_size,
-                                   observation_space=self.state_space, action_space=self.action_space)
+        self.buffer = _ReplayBuffer(buffer_size=buffer_size, train_size=self.train_size,
+                                    observation_space=self.state_space, action_space=self.action_space)
 
         self.actor_model = self._build_actor_model()
         self.critic_model = self._build_critic_model()
@@ -137,13 +138,13 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
         self._compile_models()
 
         # noise for exploration for single values
-        self.ou_noise = OUActionNoise()
+        self.ou_noise = _OUActionNoise()
 
     def reset(self) -> None:
         super().reset()
 
-        self.buffer = ReplayBuffer(train_size=self.train_size, observation_space=self.state_space,
-                                   action_space=self.action_space)
+        self.buffer = _ReplayBuffer(train_size=self.train_size, observation_space=self.state_space,
+                                    action_space=self.action_space)
 
         self.actor_model = self._build_actor_model()
         self.critic_model = self._build_critic_model()

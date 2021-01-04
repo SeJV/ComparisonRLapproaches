@@ -5,14 +5,17 @@ from gym import Env
 
 class AbstractAgent:
     def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: Optional[float] = None,
-                 alpha: float = 0.01, alpha_min: Optional[float] = None, name: str = 'Agent'):
+                 epsilon_reduction: float = 0.0, alpha: float = 0.01, alpha_min: Optional[float] = None,
+                 alpha_reduction: float = 0.0, name: str = 'Agent'):
         self.env = env
         self.epsilon_start = epsilon
         self.epsilon = epsilon
         self.epsilon_min = epsilon_min if epsilon_min else epsilon
+        self.epsilon_reduction = epsilon_reduction
         self.alpha_start = alpha
         self.alpha = alpha
         self.alpha_min = alpha_min if alpha_min else alpha
+        self.alpha_reduction = alpha_reduction
         self.name = name
 
     def reset(self) -> None:
@@ -25,6 +28,6 @@ class AbstractAgent:
     def train(self, s_next: Union[np.ndarray, float, int], reward: float, done: bool) -> None:
         ...
 
-    def episode_done(self, epsilon_reduction: float = 0, alpha_reduction: float = 0) -> None:
-        self.epsilon = max(self.epsilon - epsilon_reduction, self.epsilon_min)
-        self.alpha = max(self.alpha - alpha_reduction, self.alpha_min)
+    def episode_done(self) -> None:
+        self.epsilon = max(self.epsilon - self.epsilon_reduction, self.epsilon_min)
+        self.alpha = max(self.alpha - self.alpha_reduction, self.alpha_min)

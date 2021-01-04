@@ -62,10 +62,11 @@ class MCTreeSearchAgent(AbstractAgent):
     """
 
     """
-    def __init__(self, env: DiscreteEnv, alpha: float = 0.01, alpha_min: Optional[float] = None, gamma: float = 0.99,
-                 playouts_per_action: int = 10000, promising_children_playouts: int = 100, c: float = 1.41,
+    def __init__(self, env: DiscreteEnv, alpha: float = 0.01, alpha_min: Optional[float] = None,
+                 alpha_reduction: float = 0.0, gamma: float = 0.99, playouts_per_action: int = 10000,
+                 promising_children_playouts: int = 100, c: float = 1.41,
                  rollout_policy_agent: Optional[AbstractAgent] = None, name: str = 'MCTreeSearchAgent'):
-        super().__init__(env, alpha=alpha, alpha_min=alpha_min, name=name)
+        super().__init__(env, alpha=alpha, alpha_min=alpha_min, alpha_reduction=alpha_reduction, name=name)
         self.gamma = gamma
 
         self.playouts_per_action = playouts_per_action  # for given state, how many playouts in total for the decision
