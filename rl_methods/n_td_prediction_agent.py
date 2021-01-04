@@ -6,8 +6,8 @@ from collections import deque
 
 
 class NStepTDPredictionAgent(AbstractAgent):
-    def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: Optional[float] = None,
-                 epsilon_reduction: float = 0.0, alpha: float = 0.01, alpha_min: Optional[float] = None,
+    def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: float = 0,
+                 epsilon_reduction: float = 0.0, alpha: float = 0.01, alpha_min: float = 0,
                  alpha_reduction: float = 0.0, n: int = 2, gamma: float = 0.99, name: str = 'MCControlAgent'):
         """
         Making n-Step TD Prediction off policy, like q-learning agent

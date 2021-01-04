@@ -82,8 +82,8 @@ class _OUActionNoise:
 
 
 class DeepDeterministicPolicyGradientAgent(AbstractAgent):
-    def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: Optional[float] = None,
-                 epsilon_reduction: float = 0.0, alpha: float = 0.01, alpha_min: Optional[float] = None,
+    def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: float = 0,
+                 epsilon_reduction: float = 0.0, alpha: float = 0.01, alpha_min: float = 0,
                  alpha_reduction: float = 0.0, gamma: float = 0.99, train_size: int = 512, tau: float = 0.005,
                  actor_shape: List[int] = (64, 64), critic_shape: dict = None, buffer_size: int = 100000,
                  auto_store_models: bool = False, name: str = 'DDPGAgent'):

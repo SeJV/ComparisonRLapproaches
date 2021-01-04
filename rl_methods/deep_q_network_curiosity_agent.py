@@ -15,8 +15,8 @@ class DeepQNetworkCuriosityAgent(DeepQNetworkAgent):
         from pathlib import Path
         Path("/my/directory").mkdir(parents=True, exist_ok=True)
     """
-    def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: Optional[float] = None,
-                 epsilon_reduction: float = 0.0, alpha: float = 0.01, alpha_min: Optional[float] = None,
+    def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: float = 0,
+                 epsilon_reduction: float = 0.0, alpha: float = 0.01, alpha_min: float = 0,
                  alpha_reduction: float = 0.0, gamma: float = 0.99, train_size: int = 512,
                  nn_shape: List[int] = (126, 126), memory_len: int = 500000, auto_store_models: bool = False,
                  icm_scale: float = 1, name='DeepQNetworkCuriosityAgent'):

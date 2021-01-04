@@ -9,14 +9,14 @@ frozen lake environment is chosen. Every agent is trained for 10,000 episodes fo
 The results are visualized in a graph stored in an image. 
 """
 
-env = FrozenLakeEnv()
+env = FrozenLakeEnv(map_name='8x8')
 
-mc_agent = MCControlAgent(env, alpha=0.1)
+mc_agent = MCControlAgent(env, epsilon_reduction=(1/5000), alpha=0.1, alpha_reduction=(0.1 / 10000))
 sarsa_agent = SarsaAgent(env, alpha=0.1)
 q_agent = QLearningAgent(env, alpha=0.1)
 double_q_agent = DoubleQLearningAgent(env, alpha=0.1)
 
-stats = train_agents(env, [mc_agent, sarsa_agent, q_agent, double_q_agent], training_episodes=10000, repetitions=3)
+stats = train_agents(env, [mc_agent], training_episodes=5000, repetitions=1)
 visualize_training_results_for_agents(stats, save_fig='table_based_models_frozen_lake.png',
-                                      train_for='FrozenLake')
+                                      train_for='FrozenLake8x8')
 

@@ -4,17 +4,17 @@ from gym import Env
 
 
 class AbstractAgent:
-    def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: Optional[float] = None,
-                 epsilon_reduction: float = 0.0, alpha: float = 0.01, alpha_min: Optional[float] = None,
-                 alpha_reduction: float = 0.0, name: str = 'Agent'):
+    def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: float = 0,
+                 epsilon_reduction: float = 0, alpha: float = 0.01, alpha_min: float = 0,
+                 alpha_reduction: float = 0, name: str = 'Agent'):
         self.env = env
         self.epsilon_start = epsilon
         self.epsilon = epsilon
-        self.epsilon_min = epsilon_min if epsilon_min else epsilon
+        self.epsilon_min = epsilon_min
         self.epsilon_reduction = epsilon_reduction
         self.alpha_start = alpha
         self.alpha = alpha
-        self.alpha_min = alpha_min if alpha_min else alpha
+        self.alpha_min = alpha_min
         self.alpha_reduction = alpha_reduction
         self.name = name
 
