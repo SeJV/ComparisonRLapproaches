@@ -8,3 +8,4 @@ from rl_methods.mc_control_agent import MCControlAgent
 from rl_methods.deep_q_network_agent import DeepQNetworkAgent
 from rl_methods.deep_q_network_curiosity_agent import DeepQNetworkCuriosityAgent
 from rl_methods.mc_tree_search_agent import MCTreeSearchAgent
+from rl_methods.deep_deterministic_policy_gradient_agent import DeepDeterministicPolicyGradientAgent

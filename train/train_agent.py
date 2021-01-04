@@ -5,7 +5,7 @@ from rl_methods import AbstractAgent
 
 
 def train_agent(env: Env, agent: AbstractAgent, training_episodes: int = 1000, max_step_per_episode: int = 1000,
-                penalty_for_reaching_max_step: float = 1, verbose: bool = True, render: bool = False
+                penalty_for_reaching_max_step: float = 0, verbose: bool = True, render: bool = False
                 ) -> Dict[str, List]:
     """
     Train a single agent for the amount of training steps in a environment. Each training step is one episode.
@@ -29,7 +29,7 @@ def train_agent(env: Env, agent: AbstractAgent, training_episodes: int = 1000, m
         reward_sum = 0
         state = env.reset()
         done = False
-        while not done and steps <= max_step_per_episode:
+        while not done and steps < max_step_per_episode:
             steps += 1
             action = agent.act(state)
             state, reward, done, _ = env.step(action)

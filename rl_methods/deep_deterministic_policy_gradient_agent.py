@@ -84,13 +84,36 @@ class OUActionNoise:
 class DeepDeterministicPolicyGradientAgent(AbstractAgent):
     def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: Optional[float] = None,
                  alpha: float = 0.01, alpha_min: Optional[float] = None, gamma: float = 0.99,
-                 train_size: int = 512, actor_shape: List[int] = (64, 64), buffer_size: int = 500000,
-                 auto_store_models: bool = False, name: str = 'DDPGAgent'):
+                 train_size: int = 512, actor_shape: List[int] = (256, 256),
+                 critic_shape: dict = None,
+                 buffer_size: int = 100000, auto_store_models: bool = False, name: str = 'DDPGAgent'):
+        """
+        This implementation follows closely https://arxiv.org/pdf/1509.02971.pdf and
+        https://colab.research.google.com/github/keras-team/keras-io/blob/master/examples/rl/ipynb/ddpg_pendulum.ipynb#scrollTo=5XXLGa-86N8a
+
+        Changes to the implementations where made, so that this agent is easy usable and comparable with other agents
+        of this repo.
+
+        :param env:
+        :param epsilon:
+        :param epsilon_min:
+        :param alpha:
+        :param alpha_min:
+        :param gamma:
+        :param train_size:
+        :param actor_shape:
+        :param buffer_size:
+        :param auto_store_models:
+        :param name:
+        """
         super().__init__(env, epsilon=epsilon, epsilon_min=epsilon_min, alpha=alpha,
                          alpha_min=alpha_min, name=name)
         self.gamma = gamma
         self.train_size = train_size
         self.actor_shape = actor_shape
+        self.critic_shape: dict = critic_shape if critic_shape is not None else {
+            'state_path': [16, 32], 'action_path': [32], 'conc_path': [64, 64]
+        }
         self.buffer_size = buffer_size
         self.auto_store_models = auto_store_models
         self.a: Optional[float] = None
@@ -110,14 +133,11 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
         self.critic_model = self.build_critic_model()
         self.target_actor_model = self.build_actor_model()
         self.target_critic_model = self.build_critic_model()
-        self.tau = 0.05
+        self.tau = 0.005
 
-        # Learning rate for actor-critic models, TODO: use alpha from init
-        critic_lr = 0.002
-        actor_lr = 0.001
-
-        self.critic_optimizer = Nadam(critic_lr)
-        self.actor_optimizer = Nadam(actor_lr)
+        # Learning rate for actor-critic models
+        self.critic_optimizer = Nadam(self.alpha * 2)
+        self.actor_optimizer = Nadam(self.alpha)
 
         self._compile_models()
 
@@ -142,8 +162,8 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
         observation = np.expand_dims(observation, axis=0)
         action = np.squeeze(self.actor_model(observation))
 
-        # add noise to action for exploration
-        action = action + self.ou_noise()
+        # add noise to action for exploration, scaled by epsilon
+        action = action + self.epsilon * self.ou_noise()
 
         # Clip action to legal bounds
         self.a = np.clip(action, self.lower_bound, self.upper_bound)
@@ -169,16 +189,16 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
     def _replay(self):
         states, actions, rewards, next_states, dones = self.buffer.get_training_sample()
 
-        target_next_actions = self.target_actor_model(next_states)
-        target_next_q_values = np.array(self.target_critic_model([next_states, target_next_actions]))
+        target_next_actions = self.target_actor_model(next_states, training=True)
+        target_next_q_values = np.array(self.target_critic_model([next_states, target_next_actions], training=True))
         target_next_q_values[dones] = np.zeros(self.action_space)
         estimated_q_values = rewards + self.gamma * target_next_q_values
 
         self.critic_model.fit([states, actions], estimated_q_values, verbose=False)
 
         with tf.GradientTape() as tape:
-            predicted_actions = self.actor_model(states)
-            critic_value = self.critic_model([states, predicted_actions])
+            predicted_actions = self.actor_model(states, training=True)
+            critic_value = self.critic_model([states, predicted_actions], training=True)
             # Used `-value` as we want to maximize the value given
             # by the critic for our actions
             actor_loss = -tf.math.reduce_mean(critic_value)
@@ -203,17 +223,18 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
         return model
 
     def build_critic_model(self):
-        state_input = Input(self.state_space)
-        state_out = Dense(16, 'relu')(state_input)
-        state_out = Dense(32, 'relu')(state_out)
+        state_out = state_input = Input(self.state_space)
+        for layer in self.critic_shape['state_path']:
+            state_out = Dense(layer, 'relu')(state_out)
+            state_out = Dense(layer, 'relu')(state_out)
 
-        action_input = Input(self.action_space)
-        action_out = Dense(32, 'relu')(action_input)
+        action_out = action_input = Input(self.action_space)
+        for layer in self.critic_shape['action_path']:
+            action_out = Dense(layer, 'relu')(action_out)
 
-        concat = Concatenate()([state_out, action_out])
-
-        out = Dense(64, 'relu')(concat)
-        out = Dense(64, 'relu')(out)
+        out = Concatenate()([state_out, action_out])
+        for layer in self.critic_shape['conc_path']:
+            out = Dense(layer, 'relu')(out)
         out = Dense(1)(out)
 
         model = Model(inputs=[state_input, action_input], outputs=out)
@@ -233,6 +254,15 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
 
         self.critic_model = load_model(f'models/{self.name}/critic_model')
         self.target_critic_model = load_model(f'models/{self.name}/critic_model')
+        self._compile_models()
+
+    def episode_done(self, epsilon_reduction: float = 0, alpha_reduction: float = 0) -> None:
+        self.epsilon = max(self.epsilon - epsilon_reduction, self.epsilon_min)
+
+        self.alpha = max(self.alpha - alpha_reduction, self.alpha_min)
+        self.critic_optimizer = Nadam(self.alpha * 2)
+        self.actor_optimizer = Nadam(self.alpha)
+
         self._compile_models()
 
 

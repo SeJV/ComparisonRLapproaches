@@ -1,6 +1,6 @@
 matplotlib==3.2.1
-scipy==1.4.1
+gym==0.18.0
 tensorflow==2.4.0
+scipy==1.4.1
 termcolor==1.1.0
 numpy==1.19.4
-gym==0.18.0

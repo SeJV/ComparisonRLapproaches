@@ -5,7 +5,7 @@ from train import train_agent
 
 
 def train_agents(env: Env, agents: List[AbstractAgent], training_episodes: int = 1000, max_step_per_episode: int = 1000,
-                 repetitions: int = 3, penalty_for_reaching_max_step: float = 1, verbose: bool = True,
+                 repetitions: int = 3, penalty_for_reaching_max_step: float = 0, verbose: bool = True,
                  render: bool = False) -> Dict[str, List[Dict[str, List]]]:
     """
     Multiple instances of rl methods can be trained here repeatedly. To compare different hyperparameter of the same
