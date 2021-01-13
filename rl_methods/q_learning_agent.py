@@ -7,7 +7,7 @@ from rl_methods import AbstractAgent
 class QLearningAgent(AbstractAgent):
     def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: float = 0,
                  epsilon_reduction: float = 0.0, alpha: float = 0.01, alpha_min: float = 0,
-                 alpha_reduction: float = 0.0, gamma: float = 0.99, name: str = 'QLearningAgent'):
+                 alpha_reduction: float = 0.0, gamma: float = 0.99, name: str = 'Q-Learning Agent'):
         super().__init__(env, epsilon=epsilon, epsilon_min=epsilon_min, epsilon_reduction=epsilon_reduction,
                          alpha=alpha, alpha_min=alpha_min, alpha_reduction=alpha_reduction, name=name)
         self.gamma = gamma

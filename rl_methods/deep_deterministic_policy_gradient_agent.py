@@ -187,10 +187,9 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
         self.target_critic_model = load_model(f'models/{self.name}/critic_model')
         self._compile_models()
 
-    def episode_done(self, epsilon_reduction: float = 0, alpha_reduction: float = 0) -> None:
-        self.epsilon = max(self.epsilon - epsilon_reduction, self.epsilon_min)
+    def episode_done(self) -> None:
+        super().episode_done()
 
-        self.alpha = max(self.alpha - alpha_reduction, self.alpha_min)
         self.critic_optimizer = Nadam(self.alpha * 2)
         self.actor_optimizer = Nadam(self.alpha)
 

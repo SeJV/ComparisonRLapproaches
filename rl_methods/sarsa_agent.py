@@ -7,7 +7,7 @@ from rl_methods import AbstractAgent
 class SarsaAgent(AbstractAgent):
     def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: float = 0,
                  epsilon_reduction: float = 0.0, alpha: float = 0.01, alpha_min: float = 0,
-                 alpha_reduction: float = 0.0, gamma: float = 0.99, name: str = 'SarsaAgent'):
+                 alpha_reduction: float = 0.0, gamma: float = 0.99, name: str = 'Sarsa Agent'):
         super().__init__(env, epsilon=epsilon, epsilon_min=epsilon_min, epsilon_reduction=epsilon_reduction,
                          alpha=alpha, alpha_min=alpha_min, alpha_reduction=alpha_reduction, name=name)
         self.gamma = gamma
@@ -29,6 +29,7 @@ class SarsaAgent(AbstractAgent):
         self.q_table = np.random.rand(self.state_space, self.action_space) * 0.01
         self.s = None
         self.a = None
+        self.r = None
         self.s_next = None
         self.a_next = None
 
