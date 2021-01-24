@@ -1,3 +1,6 @@
+# abstract discrete env
+from gym.envs.toy_text.discrete import DiscreteEnv
+
 # Discrete observation and action space:
 from environments.maze import MazeEnv
 from gym.envs.toy_text.cliffwalking import CliffWalkingEnv

@@ -1,5 +1,5 @@
 from environments import FrozenLakeEnv
-from rl_methods import MCControlAgent, SarsaAgent, QLearningAgent, DoubleQLearningAgent
+from agents import MCControlAgent, SarsaAgent, QLearningAgent, DoubleQLearningAgent
 from train import train_agents
 from utils import visualize_training_results_for_agents
 
@@ -9,7 +9,7 @@ frozen lake environment is chosen. Every agent is trained for 10,000 episodes fo
 The results are visualized in a graph stored in an image. 
 """
 
-# Hyperparams (hp):
+# Hyperparameters:
 training_episodes = 50000
 
 # hp for monte carlo agent(mc)

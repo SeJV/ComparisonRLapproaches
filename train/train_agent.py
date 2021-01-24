@@ -1,7 +1,7 @@
 from typing import Dict, List
 import numpy as np
 from gym import Env
-from rl_methods import AbstractAgent
+from agents import AbstractAgent
 
 
 def train_agent(env: Env, agent: AbstractAgent, training_episodes: int = 1000, max_step_per_episode: int = 1000,

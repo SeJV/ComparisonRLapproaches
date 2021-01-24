@@ -1,5 +1,5 @@
 from environments import MazeEnv
-from rl_methods import MCTreeSearchAgent, DoubleQLearningAgent
+from agents import MCTreeSearchAgent, DoubleQLearningAgent
 from train import train_agents, train_agent
 from utils import visualize_training_results_for_agents
 

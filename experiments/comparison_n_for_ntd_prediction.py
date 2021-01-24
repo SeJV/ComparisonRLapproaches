@@ -1,5 +1,5 @@
 from environments import MazeEnv
-from rl_methods import NStepTDPredictionAgent, SarsaAgent
+from agents import NStepTDPredictionAgent, SarsaAgent
 from train import train_agents
 from utils import visualize_training_results_for_agents
 
@@ -9,15 +9,26 @@ frozen lake environment is chosen. Every agent is trained for 10,000 episodes fo
 The results are visualized in a graph stored in an image. 
 """
 
+
 env = MazeEnv('m')
 
-sarsa = SarsaAgent(env, alpha=0.01)
-n1 = NStepTDPredictionAgent(env, alpha=0.1, n=1, name='n1')
-n2 = NStepTDPredictionAgent(env, alpha=0.1, n=2, name='n2')
-n4 = NStepTDPredictionAgent(env, alpha=0.1, n=4, name='n4')
-n8 = NStepTDPredictionAgent(env, alpha=0.1, n=8, name='n8')
+# Hyperparameters:
+training_episodes = 10000
 
-stats = train_agents(env, [sarsa], training_episodes=50000, repetitions=1, max_step_per_episode=500)
+epsilon_start = 1
+epsilon_min = 0
+epsilon_reduction = (epsilon_start - epsilon_min) / training_episodes
+
+n1 = NStepTDPredictionAgent(env, n=1, alpha=0.1, name='n1', epsilon=epsilon_start, epsilon_min=epsilon_min,
+                            epsilon_reduction=epsilon_reduction)
+n2 = NStepTDPredictionAgent(env, n=2, alpha=0.1, name='n2', epsilon=epsilon_start, epsilon_min=epsilon_min,
+                            epsilon_reduction=epsilon_reduction)
+n4 = NStepTDPredictionAgent(env, n=4, alpha=0.1, name='n4', epsilon=epsilon_start, epsilon_min=epsilon_min,
+                            epsilon_reduction=epsilon_reduction)
+n8 = NStepTDPredictionAgent(env, n=8, alpha=0.1, name='n8', epsilon=epsilon_start, epsilon_min=epsilon_min,
+                            epsilon_reduction=epsilon_reduction)
+
+stats = train_agents(env, [n1, n2, n4, n8], training_episodes=training_episodes, repetitions=1, max_step_per_episode=500)
 visualize_training_results_for_agents(stats, save_fig='comparison_n_step_td_prediction.png',
                                       train_for='FrozenLake')
 

@@ -1,7 +1,7 @@
 from typing import Optional
 from gym import Env
 import numpy as np
-from rl_methods import AbstractAgent
+from agents import AbstractAgent
 
 
 class SarsaAgent(AbstractAgent):

@@ -1,6 +1,6 @@
 from typing import List, Tuple, Dict
 from termcolor import colored
-from gym.envs.toy_text.discrete import DiscreteEnv
+from environments import DiscreteEnv
 import numpy as np
 
 LEFT = 0

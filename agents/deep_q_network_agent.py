@@ -7,7 +7,7 @@ from tensorflow.keras.layers import Dense, Input, Flatten
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.optimizers import Nadam
 from tensorflow.keras.utils import to_categorical
-from rl_methods import AbstractAgent
+from agents import AbstractAgent
 
 
 class DeepQNetworkAgent(AbstractAgent):

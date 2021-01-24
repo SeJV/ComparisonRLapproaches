@@ -1,7 +1,7 @@
 from typing import Optional
 from gym import Env
 import numpy as np
-from rl_methods import AbstractAgent
+from agents import AbstractAgent
 from collections import deque
 
 
@@ -81,8 +81,8 @@ class NStepTDPredictionAgent(AbstractAgent):
             g - self.q_table[self.states[0], self.actions[0]]
         )
 
-    def episode_done(self, epsilon_reduction: float = 0, alpha_reduction: float = 0) -> None:
-        super().episode_done(epsilon_reduction, alpha_reduction)
+    def episode_done(self) -> None:
+        super().episode_done()
 
         self.states = deque(maxlen=self.n + 1)  # need to store one additional t
         self.actions = deque(maxlen=self.n + 1)

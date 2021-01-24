@@ -1,7 +1,7 @@
 from typing import Optional, List, Tuple
 from gym import Env
 import numpy as np
-from rl_methods import DeepQNetworkAgent
+from agents import DeepQNetworkAgent
 from tensorflow.keras.layers import Dense, Input, Flatten, Concatenate
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.optimizers import Nadam

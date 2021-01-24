@@ -1,6 +1,6 @@
 from typing import List, Dict
 from gym import Env
-from rl_methods import AbstractAgent
+from agents import AbstractAgent
 from train import train_agent
 
 

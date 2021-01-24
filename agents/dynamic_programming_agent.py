@@ -1,6 +1,6 @@
 import numpy as np
 from gym import Env
-from rl_methods.abstract_agent import AbstractAgent
+from agents.abstract_agent import AbstractAgent
 
 
 class DPAgent(AbstractAgent):

@@ -1,5 +1,5 @@
 from environments import PendulumEnv
-from rl_methods import DeepDeterministicPolicyGradientAgent
+from agents import DeepDeterministicPolicyGradientAgent
 from train import train_agents
 from utils import visualize_training_results_for_agents
 

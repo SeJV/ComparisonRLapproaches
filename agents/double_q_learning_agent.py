@@ -1,7 +1,7 @@
 from typing import Optional
 from gym import Env
 import numpy as np
-from rl_methods import QLearningAgent
+from agents import QLearningAgent
 
 
 class DoubleQLearningAgent(QLearningAgent):

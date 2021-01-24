@@ -7,6 +7,9 @@ different hyperparameters on environments.
 
 
 ## How to use it
+Examples of usage can be found in `/experiments` as well as an explanation for
+those here: [EXPERIMENTS.md](./experiments/EXPERIMENTS.md).
+
 Creating an environment with `gym.make(<gymid>)` or by importing environment from `/environnments` where all the working
 envs are imported. 
 
@@ -20,7 +23,7 @@ from `rl_methods`. With their class implementation it is also described, for wha
 work. 
 
 ```python
-from rl_methods import SarsaAgent, QLearningAgent
+from agents import SarsaAgent, QLearningAgent
 sarsa_agent = SarsaAgent(env)
 q_learning_agent = QLearningAgent(env)
 ``` 
@@ -35,10 +38,6 @@ from utils import visualize_training_results_for_agents
 stats = train_agents(env, [sarsa_agent, q_learning_agent])
 visualize_training_results_for_agents(stats)
 ```
-
-Examples of usage can be found in `/experiments` as well as a deeper explanation for
-those here: [EXPERIMENTS.md](./experiments/EXPERIMENTS.md).
-
 
 ### Environments
 Environments can be loaded from the [open ai package gym](https://gym.openai.com) or 

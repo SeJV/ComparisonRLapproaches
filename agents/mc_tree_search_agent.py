@@ -6,7 +6,7 @@ import json
 import numpy as np
 from gym import Env
 from gym.envs.toy_text.discrete import DiscreteEnv
-from rl_methods import AbstractAgent, DoubleQLearningAgent
+from agents import AbstractAgent, DoubleQLearningAgent
 
 
 BIG_NUMBER = 999999999999999999999
