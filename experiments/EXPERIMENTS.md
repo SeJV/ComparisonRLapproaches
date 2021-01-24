@@ -28,12 +28,16 @@ visualize_training_results_for_agents(stats)
 ![](./plots/table_based_models_frozen_lake.png)
 
 ### NTD prediction
+![](./plots/comparison_n_step_td_prediction.png)
 
 ### DQN hyperparameters
+![](./plots/comparison_dqn_cart_pole.png)
 
 ## Showcase
 
 ### Deep deterministic policy gradient agent
+![](./plots/ddpg_on_pendulum.png)
 
 ### Monte carlo tree search
+![](./plots/mcts_on_medium_maze.png)
   
