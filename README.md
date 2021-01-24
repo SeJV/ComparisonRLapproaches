@@ -36,7 +36,8 @@ stats = train_agents(env, [sarsa_agent, q_learning_agent])
 visualize_training_results_for_agents(stats)
 ```
 
-Examples of usage can be found in `/examples`
+Examples of usage can be found in `/experiments` as well as a deeper explanation for
+those here: [EXPERIMENTS.md](./experiments/EXPERIMENTS.md).
 
 
 ### Environments
