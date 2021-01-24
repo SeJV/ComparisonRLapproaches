@@ -25,7 +25,7 @@ visualize_training_results_for_agents(stats)
 ## Comparison
 
 ### Table based methods
-[](./plots/table_based_models_frozen_lake.png)
+![](./plots/table_based_models_frozen_lake.png)
 
 ### NTD prediction
 
