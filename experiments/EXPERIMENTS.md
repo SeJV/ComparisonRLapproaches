@@ -25,21 +25,19 @@ visualize_training_results_for_agents(stats)
 ## Comparison
 
 ### Table based methods
-<img src="./plots/table_based_models_frozen_lake.png" width="200" />
-
-![](./plots/table_based_models_frozen_lake.png)
+<img src="./plots/table_based_models_frozen_lake.png" width="400" />
 
 ### NTD prediction
-![](./plots/comparison_n_step_td_prediction.png)
+<img src="./plots/comparison_n_step_td_prediction.png" width="400" />
 
 ### DQN hyperparameters
-![](./plots/comparison_dqn_cart_pole.png)
+<img src="./plots/comparison_dqn_cart_pole.png" width="400" />
 
 ## Showcase
 
 ### Deep deterministic policy gradient agent
-![](./plots/ddpg_on_pendulum.png)
+<img src="./plots/ddpg_on_pendulum.png" width="400" />
 
 ### Monte carlo tree search
-![](./plots/mcts_on_medium_maze.png)
+<img src="./plots/mcts_on_medium_maze.png" width="400" />
   
