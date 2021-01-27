@@ -13,7 +13,7 @@ from agents import AbstractAgent
 class DeepQNetworkAgent(AbstractAgent):
     def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: float = 0,
                  epsilon_reduction: float = 0.0, alpha: float = 0.01, alpha_min: float = 0,
-                 alpha_reduction: float = 0.0, gamma: float = 0.99, train_size: int = 512,
+                 alpha_reduction: float = 0.0, gamma: float = 0.99, train_size: int = 4096,
                  nn_shape: List[int] = (126, 126), memory_len: int = 500000, auto_store_models: bool = False,
                  name: str = 'DeepQNetworkAgent'):
         super().__init__(env, epsilon=epsilon, epsilon_min=epsilon_min, epsilon_reduction=epsilon_reduction,
@@ -61,18 +61,6 @@ class DeepQNetworkAgent(AbstractAgent):
         model = Model(inputs=inp, outputs=m)
         return model
 
-    def fast_predict(self, inp: np.ndarray) -> np.ndarray:
-        weights = []
-        for layer in range(2, len(self.nn_shape) + 3):  # input and flatten layer will get ignored, action layer added
-            weights.append(self.q_model.layers[layer].get_weights())
-
-        res = inp.flatten()
-        for w in weights[:-1]:
-            res = np.matmul(w[0].T, res) + w[1]
-            res = res * (res > 0)  # relu
-
-        return np.matmul(weights[-1][0].T, res) + weights[-1][1]  # linear
-
     def act(self, observation: np.ndarray) -> int:
         if self.is_state_discrete:
             one_hot = to_categorical(observation, self.state_space[0])
@@ -82,7 +70,8 @@ class DeepQNetworkAgent(AbstractAgent):
         self.s = np.expand_dims(one_hot, axis=0)
 
         if np.random.random() > self.epsilon:
-            action = np.argmax(self.fast_predict(self.s))
+            predicted_action_rewards = np.squeeze(self.q_model(self.s))
+            action = np.argmax(predicted_action_rewards)
         else:
             action = np.random.randint(self.action_space)
         self.a = to_categorical(action, self.action_space)
@@ -95,19 +84,19 @@ class DeepQNetworkAgent(AbstractAgent):
             one_hot = s_next
 
         s_next = np.expand_dims(one_hot, axis=0)
-
         self.memory.append((
             self.s, self.a, reward, s_next, done
         ))
-        if len(self.memory) > self.train_size and self.episode % self.train_size == 0:
+
+    def episode_done(self) -> None:
+        super().episode_done()
+        self.episode += 1
+        if len(self.memory) > self.train_size:
             self._replay()
-            if self.episode % (self.train_size * 10) == 0:
+            if self.episode % 50 == 0:
                 self.target_model.set_weights(self.q_model.get_weights())
-                self.target_model.make_predict_function()
                 if self.auto_store_models:
                     self.store_models()
-
-        self.episode += 1
 
     def store_models(self) -> None:
         self.q_model.save(f'models/{self.name}/q_model')
