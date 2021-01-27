@@ -59,7 +59,7 @@ def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=
 
         if solved_at is not None:
             solved_array = [solved_at] * len(median_rewards_smoothed)
-            plt.plot(solved_array, label="env solved at", color="black", linewidth=2)
+            plt.plot(solved_array, label="Environment solved at", color="black", linewidth=2)
             solved_at = None  # draw this line only once
 
         color = COLORS[agent_idx]

@@ -1,4 +1,4 @@
-from environments import FrozenLakeEnv
+from environments import FrozenLakeEnv, FROZEN_LAKE_SOLVED_AT
 from agents import MCControlAgent, SarsaAgent, QLearningAgent, DoubleQLearningAgent
 from train import train_agents
 from utils import visualize_training_results_for_agents
@@ -35,7 +35,7 @@ s_hp['alpha_reduction'] = (s_hp['alpha'] - s_hp['alpha_min']) / (training_episod
 q_hp = dict()
 q_hp['epsilon'] = 1
 q_hp['epsilon_min'] = 0.01
-q_hp['epsilon_reduction'] = (q_hp['epsilon'] - q_hp['epsilon_min']) / (training_episodes * 0.6)
+q_hp['epsilon_reduction'] = (q_hp['epsilon'] - q_hp['epsilon_min']) / (training_episodes * 0.5)
 q_hp['alpha'] = 0.04
 q_hp['alpha_min'] = q_hp['alpha'] / 10
 q_hp['alpha_reduction'] = (q_hp['alpha'] - q_hp['alpha_min']) / (training_episodes * 0.6)
@@ -44,14 +44,13 @@ q_hp['alpha_reduction'] = (q_hp['alpha'] - q_hp['alpha_min']) / (training_episod
 dq_hp = dict()
 dq_hp['epsilon'] = 1
 dq_hp['epsilon_min'] = 0.01
-dq_hp['epsilon_reduction'] = (dq_hp['epsilon'] - dq_hp['epsilon_min']) / (training_episodes * 0.6)
+dq_hp['epsilon_reduction'] = (dq_hp['epsilon'] - dq_hp['epsilon_min']) / (training_episodes * 0.5)
 dq_hp['alpha'] = 0.03
-dq_hp['alpha_min'] = dq_hp['alpha'] / 10
+dq_hp['alpha_min'] = dq_hp['alpha'] / 5
 dq_hp['alpha_reduction'] = (dq_hp['alpha'] - dq_hp['alpha_min']) / (training_episodes * 0.6)
 
 
 env = FrozenLakeEnv()
-FROZEN_LAKE_SOLVED_AT = 0.78  # as gym.openai states
 
 mc_agent = MCControlAgent(env, **mc_hp)
 sarsa_agent = SarsaAgent(env, **s_hp)

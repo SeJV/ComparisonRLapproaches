@@ -29,7 +29,7 @@ class NStepTDPredictionAgent(AbstractAgent):
         self.state_space: int = self.env.observation_space.n
         self.action_space: int = self.env.action_space.n
 
-        self.q_table: np.ndarray = np.zeros((self.state_space, self.action_space))
+        self.q_table: np.ndarray = np.random.rand(self.state_space, self.action_space) * 0.01
 
         self.states: deque = deque(maxlen=self.n)
         self.actions: deque = deque(maxlen=self.n)
@@ -37,7 +37,7 @@ class NStepTDPredictionAgent(AbstractAgent):
 
     def reset(self) -> None:
         super().reset()
-        self.q_table = np.zeros((self.state_space, self.action_space))
+        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.01
 
         self.states = deque(maxlen=self.n)
         self.actions = deque(maxlen=self.n)

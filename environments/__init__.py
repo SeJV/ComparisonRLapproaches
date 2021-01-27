@@ -18,3 +18,6 @@ from gym.envs.classic_control.pendulum import PendulumEnv
 from gym.envs.classic_control.continuous_mountain_car import Continuous_MountainCarEnv
 
 # Atari Envs import with gym.make('id') all with continuous observation space and discrete action space
+
+# Constants, for which avg reward the env is considered solved
+FROZEN_LAKE_SOLVED_AT = 0.78
