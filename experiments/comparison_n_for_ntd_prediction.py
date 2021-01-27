@@ -13,7 +13,7 @@ The results are visualized in a graph stored in an image.
 env = FrozenLakeEnv()
 
 # Hyperparameters:
-training_episodes = 20000
+training_episodes = 15000
 
 hp = dict()
 hp['epsilon'] = 1
