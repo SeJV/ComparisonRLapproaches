@@ -13,7 +13,7 @@ The results are visualized in a graph stored in an image.
 env = MazeEnv('m')
 
 # Hyperparameters:
-training_episodes = 10000
+training_episodes = 1000
 
 epsilon_start = 1
 epsilon_min = 0
@@ -28,7 +28,7 @@ n4 = NStepTDPredictionAgent(env, n=4, alpha=0.1, name='n4', epsilon=epsilon_star
 n8 = NStepTDPredictionAgent(env, n=8, alpha=0.1, name='n8', epsilon=epsilon_start, epsilon_min=epsilon_min,
                             epsilon_reduction=epsilon_reduction)
 
-stats = train_agents(env, [n1, n2, n4, n8], training_episodes=training_episodes, repetitions=1, max_step_per_episode=500)
+stats = train_agents(env, [n4], training_episodes=training_episodes, repetitions=3, max_step_per_episode=500)
 visualize_training_results_for_agents(stats, save_fig='comparison_n_step_td_prediction.png',
                                       train_for='FrozenLake')
 

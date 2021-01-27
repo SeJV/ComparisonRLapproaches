@@ -42,20 +42,25 @@ def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=
         length_episode = len(rewards_per_episode)
 
         smooth_filter = length_episode / 200
-        min_rewards_per_episode = list(gaussian_filter1d(np.min(rewards_per_episode, axis=-1), sigma=smooth_filter))
-        mean_rewards_per_episode = list(gaussian_filter1d(np.mean(rewards_per_episode, axis=-1), sigma=smooth_filter))
-        max_rewards_per_episode = list(gaussian_filter1d(np.max(rewards_per_episode, axis=-1), sigma=smooth_filter))
+
+        lower_quantile_rewards_per_episode = np.quantile(rewards_per_episode, 0.25, axis=-1)
+        median_rewards_per_episode = np.median(rewards_per_episode, axis=-1)
+        upper_quantile_per_episode = np.quantile(rewards_per_episode, 0.75, axis=-1)
+
+        lower_quantile_smoothed = list(gaussian_filter1d(lower_quantile_rewards_per_episode, sigma=smooth_filter))
+        median_rewards_smoothed = list(gaussian_filter1d(median_rewards_per_episode, sigma=smooth_filter))
+        upper_quantile_smoothed = list(gaussian_filter1d(upper_quantile_per_episode, sigma=smooth_filter))
 
         if zero_zero_start:
-            min_rewards_per_episode.insert(0, 0.0)
-            mean_rewards_per_episode.insert(0, 0.0)
-            max_rewards_per_episode.insert(0, 0.0)
+            lower_quantile_smoothed.insert(0, 0.0)
+            median_rewards_smoothed.insert(0, 0.0)
+            upper_quantile_smoothed.insert(0, 0.0)
 
         color = COLORS[agent_idx]
         color_light = color.copy()
         color_light.append(0.2)
-        plt.fill_between(range(length_episode), min_rewards_per_episode, max_rewards_per_episode, color=color_light)
-        plt.plot(mean_rewards_per_episode, label=agent_name, color=color, linewidth=3)
+        plt.fill_between(range(length_episode), lower_quantile_smoothed, upper_quantile_smoothed, color=color_light)
+        plt.plot(median_rewards_smoothed, label=agent_name, color=color, linewidth=3)
 
     plt.grid()
     plt.ylabel('sum of rewards')
