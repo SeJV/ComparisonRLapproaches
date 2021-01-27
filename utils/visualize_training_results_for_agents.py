@@ -15,16 +15,17 @@ COLORS = [
 
 
 def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=None, train_for='environment',
-                                          zero_zero_start: bool = False) -> None:
+                                          zero_zero_start: bool = False, solved_at: float = None) -> None:
     """
     Giving stats resulted from train_agents function, this function creates an plot to showcase those stats.
-    The average of reward per episodes is a thick line, the area between minimum and maximum is shown as light and
+    The average of reward per episodes is a thick line, the area between 40% quantile and 60% quantile is shown as light and
     transparent color.
 
     :param stats_multiple_agents: return of train_agents function
     :param save_fig: if None, plot will get shown, else plot is stored as image with <save_fig> as filename
     :param train_for: The title of the plot will say '(rounded) training results for <train_for>'
     :param zero_zero_start: starting the graphs of agents by 0 episodes and 0 reward
+    :param solved_at: Marker for graph, as what reward is considered solving the env
     """
     for agent_idx, agent_name in enumerate(stats_multiple_agents.keys()):
         steps_per_repetition = []
@@ -43,9 +44,9 @@ def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=
 
         smooth_filter = length_episode / 200
 
-        lower_quantile_rewards_per_episode = np.quantile(rewards_per_episode, 0.25, axis=-1)
+        lower_quantile_rewards_per_episode = np.quantile(rewards_per_episode, 0.4, axis=-1)
         median_rewards_per_episode = np.median(rewards_per_episode, axis=-1)
-        upper_quantile_per_episode = np.quantile(rewards_per_episode, 0.75, axis=-1)
+        upper_quantile_per_episode = np.quantile(rewards_per_episode, 0.6, axis=-1)
 
         lower_quantile_smoothed = list(gaussian_filter1d(lower_quantile_rewards_per_episode, sigma=smooth_filter))
         median_rewards_smoothed = list(gaussian_filter1d(median_rewards_per_episode, sigma=smooth_filter))
@@ -56,6 +57,11 @@ def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=
             median_rewards_smoothed.insert(0, 0.0)
             upper_quantile_smoothed.insert(0, 0.0)
 
+        if solved_at is not None:
+            solved_array = [solved_at] * len(median_rewards_smoothed)
+            plt.plot(solved_array, label="env solved at", color="black", linewidth=2)
+            solved_at = None  # draw this line only once
+
         color = COLORS[agent_idx]
         color_light = color.copy()
         color_light.append(0.2)
@@ -65,7 +71,7 @@ def visualize_training_results_for_agents(stats_multiple_agents: dict, save_fig=
     plt.grid()
     plt.ylabel('sum of rewards')
     plt.xlabel('episodes')
-    plt.legend(loc='upper left')
+    plt.legend(loc='center left')
     plt.title(f'(rounded) training results for {train_for}')
     if save_fig:
         plt.savefig('plots/' + save_fig)

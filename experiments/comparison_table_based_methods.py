@@ -10,7 +10,7 @@ The results are visualized in a graph stored in an image.
 """
 
 # Hyperparameters:
-training_episodes = 50000
+training_episodes = 40000
 
 # hp for monte carlo agent(mc)
 mc_hp = dict()
@@ -26,8 +26,8 @@ s_hp = dict()
 s_hp['epsilon'] = 1
 s_hp['epsilon_min'] = 0.01
 s_hp['epsilon_reduction'] = (s_hp['epsilon'] - s_hp['epsilon_min']) / (training_episodes * 0.7)
-s_hp['alpha'] = 0.05
-s_hp['alpha_min'] = s_hp['alpha'] / 5
+s_hp['alpha'] = 0.03
+s_hp['alpha_min'] = s_hp['alpha'] / 10
 s_hp['alpha_reduction'] = (s_hp['alpha'] - s_hp['alpha_min']) / (training_episodes * 0.7)
 
 
@@ -36,7 +36,7 @@ q_hp = dict()
 q_hp['epsilon'] = 1
 q_hp['epsilon_min'] = 0.01
 q_hp['epsilon_reduction'] = (q_hp['epsilon'] - q_hp['epsilon_min']) / (training_episodes * 0.6)
-q_hp['alpha'] = 0.05
+q_hp['alpha'] = 0.04
 q_hp['alpha_min'] = q_hp['alpha'] / 10
 q_hp['alpha_reduction'] = (q_hp['alpha'] - q_hp['alpha_min']) / (training_episodes * 0.6)
 
@@ -51,6 +51,7 @@ dq_hp['alpha_reduction'] = (dq_hp['alpha'] - dq_hp['alpha_min']) / (training_epi
 
 
 env = FrozenLakeEnv()
+FROZEN_LAKE_SOLVED_AT = 0.78  # as gym.openai states
 
 mc_agent = MCControlAgent(env, **mc_hp)
 sarsa_agent = SarsaAgent(env, **s_hp)
@@ -58,9 +59,9 @@ q_agent = QLearningAgent(env, **q_hp)
 double_q_agent = DoubleQLearningAgent(env, **dq_hp)
 
 stats = train_agents(env, [mc_agent, sarsa_agent, q_agent, double_q_agent],
-                     training_episodes=training_episodes, repetitions=3)
+                     training_episodes=training_episodes, repetitions=5)
 visualize_training_results_for_agents(stats, save_fig='table_based_models_frozen_lake.png',
-                                      train_for='FrozenLake')
+                                      train_for='FrozenLake', solved_at=FROZEN_LAKE_SOLVED_AT)
 
 
 
