@@ -25,29 +25,29 @@ mc_hp['alpha_reduction'] = (mc_hp['alpha'] - mc_hp['alpha_min']) / (training_epi
 s_hp = dict()
 s_hp['epsilon'] = 1
 s_hp['epsilon_min'] = 0.01
-s_hp['epsilon_reduction'] = (s_hp['epsilon'] - s_hp['epsilon_min']) / (training_episodes * 0.8)
-s_hp['alpha'] = 0.1
+s_hp['epsilon_reduction'] = (s_hp['epsilon'] - s_hp['epsilon_min']) / (training_episodes * 0.7)
+s_hp['alpha'] = 0.05
 s_hp['alpha_min'] = s_hp['alpha'] / 5
-s_hp['alpha_reduction'] = (s_hp['alpha'] - s_hp['alpha_min']) / (training_episodes * 0.8)
+s_hp['alpha_reduction'] = (s_hp['alpha'] - s_hp['alpha_min']) / (training_episodes * 0.7)
 
 
 # hp for q_agent agent(q)
 q_hp = dict()
 q_hp['epsilon'] = 1
 q_hp['epsilon_min'] = 0.01
-q_hp['epsilon_reduction'] = (q_hp['epsilon'] - q_hp['epsilon_min']) / (training_episodes * 0.5)
-q_hp['alpha'] = 0.1
+q_hp['epsilon_reduction'] = (q_hp['epsilon'] - q_hp['epsilon_min']) / (training_episodes * 0.6)
+q_hp['alpha'] = 0.05
 q_hp['alpha_min'] = q_hp['alpha'] / 10
-q_hp['alpha_reduction'] = (q_hp['alpha'] - q_hp['alpha_min']) / (training_episodes * 0.5)
+q_hp['alpha_reduction'] = (q_hp['alpha'] - q_hp['alpha_min']) / (training_episodes * 0.6)
 
 # hp for double_q_agent agent(dq)
 dq_hp = dict()
 dq_hp['epsilon'] = 1
 dq_hp['epsilon_min'] = 0.01
-dq_hp['epsilon_reduction'] = (dq_hp['epsilon'] - dq_hp['epsilon_min']) / (training_episodes * 0.5)
-dq_hp['alpha'] = 0.1
+dq_hp['epsilon_reduction'] = (dq_hp['epsilon'] - dq_hp['epsilon_min']) / (training_episodes * 0.6)
+dq_hp['alpha'] = 0.03
 dq_hp['alpha_min'] = dq_hp['alpha'] / 10
-dq_hp['alpha_reduction'] = (dq_hp['alpha'] - dq_hp['alpha_min']) / (training_episodes * 0.5)
+dq_hp['alpha_reduction'] = (dq_hp['alpha'] - dq_hp['alpha_min']) / (training_episodes * 0.6)
 
 
 env = FrozenLakeEnv()
