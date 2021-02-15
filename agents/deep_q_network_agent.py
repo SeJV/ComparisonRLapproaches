@@ -14,7 +14,7 @@ class DeepQNetworkAgent(AbstractAgent):
     def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: float = 0,
                  epsilon_reduction: float = 0.0, alpha: float = 0.01, alpha_min: float = 0,
                  alpha_reduction: float = 0.0, gamma: float = 0.99, train_size: int = 4096,
-                 nn_shape: List[int] = (126, 126), memory_len: int = 500000, auto_store_models: bool = False,
+                 nn_shape: List[int] = (32, 32), memory_len: int = 50000, auto_store_models: bool = False,
                  name: str = 'DeepQNetworkAgent'):
         super().__init__(env, epsilon=epsilon, epsilon_min=epsilon_min, epsilon_reduction=epsilon_reduction,
                          alpha=alpha, alpha_min=alpha_min, alpha_reduction=alpha_reduction, name=name)
