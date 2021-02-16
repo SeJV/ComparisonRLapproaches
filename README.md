@@ -8,7 +8,7 @@ different hyperparameters on environments.
 
 ## How to use it
 Examples of usage can be found in `/experiments` as well as an explanation for
-those here: [EXPERIMENTS.md](./experiments/EXPERIMENTS.md).
+those here: [EXPERIMENTS.md](experiments/README.md).
 
 Creating an environment with `gym.make(<gymid>)` or by importing environment from `/environnments` where all the working
 envs are imported. 

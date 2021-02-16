@@ -79,8 +79,12 @@ An example of one episode of the pendulum can be seen below:
 <img src="./monitoring/ddpg/openaigym.video.gif" width="400" />
 
 ### Monte carlo tree search
-The action tree is expanded with each action. So MCTS doesn't need training (its rollout policy might). 
-This is shown by the plot where the agent gets the maximum reward in the first training episode. 
+The action tree is expanded with each action. MCTS doesn't need training (its rollout policy might). 
+Here a maze is used as environment, where the agent(red) has to reach the goal (green) and receives a positive reward. 
+For collecting the treasures (yellow, magenta and cyan) the agent receives double the amount of the goal. Also there is
+a hole (black), that will end the episode. 
 
-<img src="./plots/mcts_on_medium_maze.png" width="400" />
+The action tree is visualized by the red line in the following video. 
+
+<img src="./monitoring/mcts/openaigym.video.gif" width="400" />
   

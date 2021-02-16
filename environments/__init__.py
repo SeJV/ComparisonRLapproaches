@@ -22,3 +22,5 @@ from gym.envs.classic_control.continuous_mountain_car import Continuous_Mountain
 # Constants, for which avg reward the env is considered solved
 FROZEN_LAKE_SOLVED_AT = 0.78
 CART_POLE_SOLVED_AT = 475.0
+PENDULUM_SOLVED_AT = -200
+

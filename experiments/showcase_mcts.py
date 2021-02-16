@@ -1,5 +1,6 @@
+import time
 from environments import MazeEnv
-from agents import MCTreeSearchAgent, DoubleQLearningAgent
+from agents import MCTreeSearchAgent, QLearningAgent
 from train import train_agents, train_agent
 from utils import visualize_training_results_for_agents
 
@@ -13,20 +14,41 @@ it can choose the optimal action for given state.
 """
 
 
-env = MazeEnv(size='m')
+env = MazeEnv(size='s')
 
-rollout_policy_agent = DoubleQLearningAgent(env, epsilon=1, epsilon_min=0.6, alpha=0.001)
-train_agent(env, rollout_policy_agent, training_episodes=10000)
-# this trains actually just to the point, that the agent reaches the goal without finding any treasures
+training_episodes = 2000
+dql_hp = dict()
+dql_hp["epsilon"] = 1
+dql_hp["epsilon_min"] = .5
+dql_hp["epsilon_reduction"] = (dql_hp["epsilon"] - dql_hp["epsilon_min"]) / training_episodes
+dql_hp["alpha"] = .01
 
-rollout_policy_agent.epsilon = 0.1
-rollout_policy_agent.alpha = 0.0001
-mcts = MCTreeSearchAgent(env,
-                         playouts_per_action=2000,
-                         rollout_policy_agent=rollout_policy_agent)
-# however, the mcts agent still finds the path to the treasures, because of his action tree
+rollout_policy_agent = QLearningAgent(env, **dql_hp)
+train_agent(env, rollout_policy_agent, training_episodes=training_episodes)
 
-stats = train_agents(env, [mcts], training_episodes=1, repetitions=1, render=True)
-visualize_training_results_for_agents(stats, save_fig='mcts_on_medium_maze.png',
-                                      train_for='medium Maze', zero_zero_start=True)
+rollout_policy_agent.epsilon = .0
+rollout_policy_agent.alpha = .0
 
+mcts_agent = MCTreeSearchAgent(env,
+                               playouts_per_action=10,
+                               promising_children_playouts=1,
+                               rollout_policy_agent=rollout_policy_agent,
+                               c=0.1,
+                               visualize=True)
+
+state = env.reset()
+max_steps = 15
+steps = 0
+done = False
+
+env.render()
+time.sleep(15)
+
+while not done and steps < max_steps:
+    action = mcts_agent.act(state)
+    state, reward, done, _ = env.step(action)
+    mcts_agent.train(state, reward, done)
+    steps += 1
+
+env.render()
+time.sleep(15)
