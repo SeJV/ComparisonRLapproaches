@@ -88,12 +88,6 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
                  actor_shape: List[int] = (16, 16), critic_shape: dict = None, buffer_size: int = 100000,
                  auto_store_models: bool = False, name: str = 'DDPGAgent'):
         """
-        This implementation follows closely https://arxiv.org/pdf/1509.02971.pdf and
-        https://colab.research.google.com/github/keras-team/keras-io/blob/master/examples/rl/ipynb/ddpg_pendulum.ipynb#scrollTo=5XXLGa-86N8a
-
-        Changes to the implementations where made, so that this agent is easy usable and comparable with other agents
-        of this repo.
-
         :param gamma: Discount of future rewards
         :param train_size: Sample size of training replay
         :param actor_shape: Shape of sequential dense actor NN
