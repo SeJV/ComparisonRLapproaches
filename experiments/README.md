@@ -1,8 +1,9 @@
 # Experiments
 
-Methods can be compared with each other in their training behaviour.  
+Agents can be compared with each other in their training behaviour, or show, that the implementation is working as
+intended. 
 
-In general, all experiments follow the same structure: 
+In general, experiments follow this structure: 
 
 ```python
 from environments import DiscreteEnv
@@ -65,8 +66,7 @@ Those results can change, when altering hyperparameters like epsilon decay, NN s
 
 
 ## Showcase
-These tests show that the corresponding method implementation works as intended. Comparisons would
-take too many resources in my case, but are also possible. 
+These tests show that the corresponding method implementation works as intended.
 
 ### Deep deterministic policy gradient agent
 The environment of the pendulum has a continuous state and action space. Solving this shows that
@@ -81,8 +81,7 @@ An example of one episode of the pendulum can be seen below:
 ### Monte carlo tree search
 The action tree is expanded with each action. MCTS doesn't need training (its rollout policy might). 
 Here a maze is used as environment, where the agent(red) has to reach the goal (green) and receives a positive reward. 
-For collecting the treasures (yellow, magenta and cyan) the agent receives double the amount of the goal. Also there is
-a hole (black), that will end the episode. 
+For collecting the treasure (cyan) the agent receives double the amount of the goal. 
 
 The action tree is visualized by the red line in the following video. 
 
