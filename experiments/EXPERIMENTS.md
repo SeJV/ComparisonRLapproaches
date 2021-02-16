@@ -76,7 +76,7 @@ the agent works as intended.
 
 An example of one episode of the pendulum can be seen below:
 
-<img src="./plots/mcts_on_medium_maze.gif" width="40" />
+<img src="./monitoring/ddpg/openaigym.video.gif" width="400" />
 
 ### Monte carlo tree search
 The action tree is expanded with each action. So MCTS doesn't need training (its rollout policy might). 

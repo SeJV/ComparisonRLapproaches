@@ -85,7 +85,7 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
     def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: float = 0,
                  epsilon_reduction: float = 0.0, alpha: float = 0.01, alpha_min: float = 0,
                  alpha_reduction: float = 0.0, gamma: float = 0.99, train_size: int = 512, tau: float = 0.005,
-                 actor_shape: List[int] = (64, 64), critic_shape: dict = None, buffer_size: int = 100000,
+                 actor_shape: List[int] = (16, 16), critic_shape: dict = None, buffer_size: int = 100000,
                  auto_store_models: bool = False, name: str = 'DDPGAgent'):
         """
         This implementation follows closely https://arxiv.org/pdf/1509.02971.pdf and
@@ -108,7 +108,7 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
         self.train_size = train_size
         self.actor_shape = actor_shape
         self.critic_shape: dict = critic_shape if critic_shape is not None else {
-            'state_path': [32, 16], 'action_path': [32], 'conc_path': [32, 32]
+            'state_path': [16, 16], 'action_path': [16], 'conc_path': [16, 16]
         }
         self.buffer_size = buffer_size
         self.auto_store_models = auto_store_models

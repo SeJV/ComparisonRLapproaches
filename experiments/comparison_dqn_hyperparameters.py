@@ -13,31 +13,31 @@ env = CartPoleEnv()
 
 # Hyperparameters (hp):
 training_episodes = 3000
+reach_min = 1
 
 hp = dict()
 hp['epsilon'] = 1
 hp['epsilon_min'] = 0.01
-hp['epsilon_reduction'] = (hp['epsilon'] - hp['epsilon_min']) / (training_episodes * 1)
+hp['epsilon_reduction'] = (hp['epsilon'] - hp['epsilon_min']) / (training_episodes * reach_min)
 hp['nn_shape'] = [16]
 hp['train_size'] = 256
 
-alpha_reach_min = 1
 alpha_reduction_rate = 20
 
 hp_alpha_high = hp.copy()
 hp_alpha_high['alpha'] = 0.021
 hp_alpha_high['alpha_min'] = hp_alpha_high['alpha'] / alpha_reduction_rate
-hp_alpha_high['alpha_reduction'] = (hp_alpha_high['alpha'] - hp_alpha_high['alpha_min']) / (training_episodes * alpha_reach_min)
+hp_alpha_high['alpha_reduction'] = (hp_alpha_high['alpha'] - hp_alpha_high['alpha_min']) / (training_episodes * reach_min)
 
 hp_alpha_mid = hp.copy()
 hp_alpha_mid['alpha'] = 0.02
 hp_alpha_mid['alpha_min'] = hp_alpha_mid['alpha'] / alpha_reduction_rate
-hp_alpha_mid['alpha_reduction'] = (hp_alpha_mid['alpha'] - hp_alpha_mid['alpha_min']) / (training_episodes * alpha_reach_min)
+hp_alpha_mid['alpha_reduction'] = (hp_alpha_mid['alpha'] - hp_alpha_mid['alpha_min']) / (training_episodes * reach_min)
 
 hp_alpha_low = hp.copy()
 hp_alpha_low['alpha'] = 0.019
 hp_alpha_low['alpha_min'] = hp_alpha_low['alpha'] / alpha_reduction_rate
-hp_alpha_low['alpha_reduction'] = (hp_alpha_low['alpha'] - hp_alpha_low['alpha_min']) / (training_episodes * alpha_reach_min)
+hp_alpha_low['alpha_reduction'] = (hp_alpha_low['alpha'] - hp_alpha_low['alpha_min']) / (training_episodes * reach_min)
 
 dqn_agent_high = DeepQNetworkAgent(env, **hp_alpha_high, name=f'alpha={hp_alpha_high["alpha"]}')
 dqn_agent_mid = DeepQNetworkAgent(env, **hp_alpha_mid, name=f'alpha={hp_alpha_mid["alpha"]}')
