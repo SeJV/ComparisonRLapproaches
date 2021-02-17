@@ -57,9 +57,6 @@ class Node:
 
 
 class MCTreeSearchAgent(AbstractAgent):
-    """
-
-    """
     def __init__(self, env: DiscreteEnv, alpha: float = 0.01, alpha_min: float = 0,
                  alpha_reduction: float = 0.0, gamma: float = 0.99, playouts_per_action: int = 10000,
                  promising_children_playouts: int = 100, c: float = 1.41,

@@ -8,13 +8,6 @@ from tensorflow.keras.optimizers import Nadam
 
 
 class DeepQNetworkCuriosityAgent(DeepQNetworkAgent):
-    """
-    TODO: test behavior of intrinsic reward, does it go down over time?
-    TODO: Store png of model graph into folder of the agent
-    TODO: ensure with following the existence of the directory of the model
-        from pathlib import Path
-        Path("/my/directory").mkdir(parents=True, exist_ok=True)
-    """
     def __init__(self, env: Env, epsilon: float = 1.0, epsilon_min: float = 0,
                  epsilon_reduction: float = 0.0, alpha: float = 0.01, alpha_min: float = 0,
                  alpha_reduction: float = 0.0, gamma: float = 0.99, train_size: int = 512,
@@ -110,14 +103,12 @@ class DeepQNetworkCuriosityAgent(DeepQNetworkAgent):
         self.state_prediction_model.save(f'models/{self.name}/state_prediction')
         self.inverse_dynamics_model.save(f'models/{self.name}/inverse_dynamics')
         self.fe.save(f'models/{self.name}/fe')
-        # TODO: store models with interconnections, idea: self.full_model with all interconnections to store
 
     def load_models(self) -> None:
         self.state_prediction_model = load_model(f'models/{self.name}/state_prediction')
         self.inverse_dynamics_model = load_model(f'models/{self.name}/inverse_dynamics')
         self.fe = load_model(f'models/{self.name}/fe')
         super().load_models()
-        # TODO: load models with interconnections, idea: self.full_model deconstruct into the three models
 
     def _compile_models(self) -> None:
         super()._compile_models()
