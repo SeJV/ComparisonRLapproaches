@@ -73,6 +73,6 @@ class NStepTDPredictionAgent(AbstractAgent):
     def episode_done(self) -> None:
         super().episode_done()
 
-        self.states = deque(maxlen=self.n + 1)  # need to store one additional t
-        self.actions = deque(maxlen=self.n + 1)
-        self.rewards = deque(maxlen=self.n + 1)
+        self.states = deque(maxlen=self.n)
+        self.actions = deque(maxlen=self.n)
+        self.rewards = deque(maxlen=self.n)
