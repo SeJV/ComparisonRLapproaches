@@ -66,14 +66,6 @@ As shown in the plot, agent with `alpha=0.019` is the most promising, but furthe
 ## Showcase
 These tests show that the corresponding method implementation works as intended.
 
-### Deep Deterministic Policy Gradient agent
-The environment of the pendulum has a continuous state and action space. Solving this shows that
-the [Deep Deterministic Policy Gradient](/agents/deep_deterministic_policy_gradient_agent.py) works as intended. 
-
-An example of one episode of the pendulum can be seen below:
-
-<img src="./monitoring/ddpg/openaigym.video.gif" width="400" />
-
 ### Monte Carlo Tree Search
 The action tree is expanded with each action. [Monte Carlo Tree Search](/agents/mc_tree_search_agent.py) doesn't need training (its rollout policy might). 
 Here a maze is used as environment, where the agent(red) has to reach the goal (green) and receives a positive reward. 
@@ -82,4 +74,13 @@ For collecting the treasure (cyan) the agent receives double the amount of the g
 The action tree is visualized by the red line in the following video. 
 
 <img src="./monitoring/mcts/openaigym.video.gif" width="400" />
+
+### Deep Deterministic Policy Gradient agent
+The environment of the pendulum has a continuous state and action space. Solving this shows that
+the [Deep Deterministic Policy Gradient](/agents/deep_deterministic_policy_gradient_agent.py) works as intended. 
+
+An example of one episode of the pendulum can be seen below:
+
+<img src="./monitoring/ddpg/openaigym.video.gif" width="400" />
+
   
