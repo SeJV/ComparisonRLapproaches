@@ -149,7 +149,6 @@ class MCTreeSearchAgent(AbstractAgent):
         children_values = self._get_child_values()
         self.a = int(np.argmax(children_values))
         self.simulation_counter = 0  # reset simulation_counter for next action decision
-        print(self.a)
         return self.a
 
     def train(self, s_next: int, reward: float, done: bool) -> None:
