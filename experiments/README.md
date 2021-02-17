@@ -72,8 +72,6 @@ These tests show that the corresponding method implementation works as intended.
 The environment of the pendulum has a continuous state and action space. Solving this shows that
 the agent works as intended. 
 
-<img src="./plots/ddpg_on_pendulum.png" width="400" />
-
 An example of one episode of the pendulum can be seen below:
 
 <img src="./monitoring/ddpg/openaigym.video.gif" width="400" />
