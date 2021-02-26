@@ -1,4 +1,5 @@
 # Experiments
+<!-- TODO: 1. DQN schaffen 2. MCTS Baum 3. DDPG schaffen  -->
 
 Agents can be compared with each other in their training behaviour, or show, that the implementation is working as
 intended. 

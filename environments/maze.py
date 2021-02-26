@@ -196,9 +196,11 @@ class MazeEnv(DiscreteEnv):
             copy_env = copy.deepcopy(self)
             self.recursive_draw_action_tree(child, copy_env)
 
+        max_visits = max(self.mcts_moves.values())
         for move in self.mcts_moves.keys():
             (c_cw, c_ch), (n_cw, n_ch) = move
-            line_thickness = 10
+            visits = self.mcts_moves[move]
+            line_thickness = math.ceil((visits / max_visits) * 15) + 5
             line = rendering.Line((c_cw, c_ch), (n_cw, n_ch), width=line_thickness)
             line.set_color(.8, .2, .2)
             VIEWER.add_geom(line)

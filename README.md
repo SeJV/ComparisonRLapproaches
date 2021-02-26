@@ -6,7 +6,7 @@ to compare agents can be used on all instances. These are meant to serve as a le
 ## Table of Contents
 - [Agents](/agents)
 - [Environments](/environments)
-- [Experiments](/environments)
+- [Experiments](/experiments)
 - Helper Functions in: [utils](/utils) and [train](/train)
 
 ### How to use it
