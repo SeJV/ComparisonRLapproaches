@@ -14,29 +14,34 @@ it can choose the optimal action for given state.
 
 
 env = MazeEnv(size='l')
+ROLLOUT_TRAINING = False
 
-training_episodes = 10000
-dql_hp = dict()
-dql_hp["epsilon"] = 1
-dql_hp["epsilon_min"] = .5
-dql_hp["epsilon_reduction"] = (dql_hp["epsilon"] - dql_hp["epsilon_min"]) / training_episodes
-dql_hp["alpha"] = .01
+training_episodes = 150000
+ql_hp = dict()
+ql_hp["epsilon"] = 1
+ql_hp["epsilon_min"] = .7
+ql_hp["epsilon_reduction"] = (ql_hp["epsilon"] - ql_hp["epsilon_min"]) / training_episodes
+ql_hp["alpha"] = .01
 
-rollout_policy_agent = QLearningAgent(env, **dql_hp)
-train_agent(env, rollout_policy_agent, training_episodes=training_episodes)
+rollout_policy_agent = QLearningAgent(env, **ql_hp)
+if ROLLOUT_TRAINING:
+    train_agent(env, rollout_policy_agent, training_episodes=training_episodes)
+    rollout_policy_agent.store_models()
+else:
+    rollout_policy_agent.load_models()
 
-rollout_policy_agent.epsilon = .0
+rollout_policy_agent.epsilon = .2
 rollout_policy_agent.alpha = .0
 
 mcts_agent = MCTreeSearchAgent(env,
                                playouts_per_action=5,
                                promising_children_playouts=1,
                                rollout_policy_agent=rollout_policy_agent,
-                               c=0.05,
+                               c=0.1,
                                visualize=True)
 
 state = env.reset()
-max_steps = 100
+max_steps = 150
 steps = 0
 done = False
 

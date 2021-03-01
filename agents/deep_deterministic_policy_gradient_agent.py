@@ -125,6 +125,9 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
         self.target_critic_model = self._build_critic_model()
         self.tau = tau
 
+        self.actor_model_file = f'models/{self.name}/actor_model'
+        self.critic_model_file = f'models/{self.name}/critic_model'
+
         # Learning rate for actor-critic models
         self.critic_optimizer = Nadam(self.alpha * 2)  # critic optimizer has twice the lr of actor optimizer
         self.actor_optimizer = Nadam(self.alpha)
@@ -170,15 +173,15 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
                 self.store_models()
 
     def store_models(self) -> None:
-        self.target_actor_model.save(f'models/{self.name}/actor_model')
-        self.target_critic_model.save(f'models/{self.name}/critic_model')
+        self.target_actor_model.save(self.actor_model_file)
+        self.target_critic_model.save(self.critic_model_file)
 
     def load_models(self) -> None:
-        self.actor_model = load_model(f'models/{self.name}/actor_model')
-        self.target_actor_model = load_model(f'models/{self.name}/actor_model')
+        self.actor_model = load_model(self.actor_model_file)
+        self.target_actor_model = load_model(self.actor_model_file)
 
-        self.critic_model = load_model(f'models/{self.name}/critic_model')
-        self.target_critic_model = load_model(f'models/{self.name}/critic_model')
+        self.critic_model = load_model(self.critic_model_file)
+        self.target_critic_model = load_model(self.critic_model_file)
         self._compile_models()
 
     def episode_done(self) -> None:
@@ -253,5 +256,4 @@ class DeepDeterministicPolicyGradientAgent(AbstractAgent):
 
     def _compile_models(self) -> None:
         self.critic_model.compile(self.critic_optimizer, loss='mse')
-        # self.actor_model.compile('Nadam', loss='mse') # TODO! how to implement -value loss?
 

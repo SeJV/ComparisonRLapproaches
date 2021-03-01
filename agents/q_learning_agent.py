@@ -17,6 +17,7 @@ class QLearningAgent(AbstractAgent):
         self.action_space = self.env.action_space.n
 
         self.q_table = np.random.rand(self.state_space, self.action_space) * 0.01
+        self.q_table_file = f'models/{self.name}/q_table.npy'
 
         self.s = None
         self.a = None
@@ -43,3 +44,10 @@ class QLearningAgent(AbstractAgent):
         self.q_table[self.s, self.a] = self.q_table[self.s, self.a] + self.alpha * (
             reward + self.gamma * q_next - self.q_table[self.s, self.a]
         )
+
+    def store_models(self) -> None:
+        np.save(self.q_table_file, self.q_table)
+
+    def load_models(self) -> None:
+        self.q_table = np.load(self.q_table_file)
+
