@@ -57,11 +57,10 @@ Every agent uses the same hyperparameters, except the n-value. Results are shown
 The training environment is CartPole from openAI with continuous observation space and discrete actions. 
 Three versions of a [Deep Q-Network](/agents/deep_q_network_agent.py) with the same epsilon reduction and neural network structure
 are used, but the learning rate `alpha` is different for each agent. 
-The effect of learning rate on training effectiveness is compared.   
+The effect of learning rate on training effectiveness is compared. Cartpole is considered as solved, when the agent gets
+a reward of over 195 for 100 consecutive episodes.  
 
 <img src="./plots/comparison_dqn_cart_pole.png" width="400" />
-
-As shown in the plot, agent with `alpha=0.019` is the most promising, but further hyperparameter tweaking has to be done.  
 
 
 ## Showcase
@@ -69,16 +68,16 @@ These tests show that the corresponding method implementation works as intended.
 
 ### [Dynamic Programming Agent](/experiments/showcase_dp.py)
 DP-Agent updates its Q-Values due to knowledge of state transition probabilities
-and reward probabilities. Applied to FrozenLake4x4 it results in: 
+and reward probabilities. FrozenLake is considered solved with more than 78% success rate. DP Applied to FrozenLake4x4 it results in: 
 
 `Dynamic Programming Agent solved 83.0% of FrozenLake4x4 iterations`
 
 ### [Monte Carlo Tree Search](/experiments/showcase_mcts.py)
 The action tree is expanded with each action. [Monte Carlo Tree Search](/agents/mc_tree_search_agent.py) doesn't need training (its rollout policy might). 
 Here a maze is used as environment, where the agent(red) has to reach the goal (green) and receives a positive reward. 
-For collecting the treasure (cyan) the agent receives double the amount of the goal. 
+For collecting the treasure (rhombus) the agent receives double the amount of the goal. 
 
-The action tree is visualized by the red line in the following video. 
+The action tree is visualized by the red lines in the following video. 
 
 <img src="./monitoring/mcts/openaigym.video.gif" width="400" />
 
