@@ -67,6 +67,12 @@ As shown in the plot, agent with `alpha=0.019` is the most promising, but furthe
 ## Showcase
 These tests show that the corresponding method implementation works as intended.
 
+### [Dynamic Programming Agent](/experiments/showcase_dp.py)
+DP-Agent updates its Q-Values due to knowledge of state transition probabilities
+and reward probabilities. Applied to FrozenLake4x4 it results in: 
+
+`Dynamic Programming Agent solved 83.0% of FrozenLake4x4 iterations`
+
 ### Monte Carlo Tree Search
 The action tree is expanded with each action. [Monte Carlo Tree Search](/agents/mc_tree_search_agent.py) doesn't need training (its rollout policy might). 
 Here a maze is used as environment, where the agent(red) has to reach the goal (green) and receives a positive reward. 

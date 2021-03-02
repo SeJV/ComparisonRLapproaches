@@ -4,7 +4,7 @@ from agents.abstract_agent import AbstractAgent
 
 
 class DPAgent(AbstractAgent):
-    def __init__(self, env: Env, theta: float = 0.1, gamma: float = 0.1, name: str = 'DPAgent'):
+    def __init__(self, env: Env, theta: float = 0.1, gamma: float = 0.99, name: str = 'DPAgent'):
         super().__init__(env, name=name)
         self.mdp = env.P  # where self.mdp[state][action] gives a list of (probability, state t+1, reward, done)
         self.theta = theta
@@ -15,8 +15,8 @@ class DPAgent(AbstractAgent):
         self.episode = 1
 
         # only discrete environments possible
-        self.state_space = self.env.observation_space.n
-        self.action_space = self.env.action_space.n
+        self.state_space: int = self.env.observation_space.n
+        self.action_space: int = self.env.action_space.n
 
         self.v_table = np.zeros(self.state_space)  # np.random.rand(self.state_space), self.v_table[-1] = 0.0
         self.q_table = np.zeros((self.state_space, self.action_space))

@@ -13,10 +13,10 @@ class SarsaAgent(AbstractAgent):
         self.gamma = gamma
 
         # only discrete environments possible
-        self.state_space = self.env.observation_space.n
-        self.action_space = self.env.action_space.n
+        self.state_space: int = self.env.observation_space.n
+        self.action_space: int = self.env.action_space.n
 
-        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.01
+        self.q_table: np.ndarray = np.random.rand(self.state_space, self.action_space) * 0.01
 
         self.s = None
         self.a = None

@@ -11,7 +11,7 @@ class NStepTDPredictionAgent(AbstractAgent):
                  alpha_reduction: float = 0.0, n: int = 2, gamma: float = 0.99, name: str = 'MCControlAgent'):
         super().__init__(env, epsilon=epsilon, epsilon_min=epsilon_min, epsilon_reduction=epsilon_reduction,
                          alpha=alpha, alpha_min=alpha_min, alpha_reduction=alpha_reduction, name=name)
-        self.n = n  # n for n-step
+        self.n = n
         self.gamma = gamma
 
         # only discrete environments possible
@@ -20,9 +20,9 @@ class NStepTDPredictionAgent(AbstractAgent):
 
         self.q_table: np.ndarray = np.random.rand(self.state_space, self.action_space) * 0.01
 
-        self.states: deque = deque(maxlen=self.n)
-        self.actions: deque = deque(maxlen=self.n)
-        self.rewards: deque = deque(maxlen=self.n)
+        self.states = deque(maxlen=self.n)
+        self.actions = deque(maxlen=self.n)
+        self.rewards = deque(maxlen=self.n)
 
     def reset(self) -> None:
         super().reset()

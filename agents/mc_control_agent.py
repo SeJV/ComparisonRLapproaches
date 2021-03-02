@@ -13,14 +13,14 @@ class MCControlAgent(AbstractAgent):
         self.gamma = gamma
 
         # only discrete environments possible
-        self.state_space = self.env.observation_space.n
-        self.action_space = self.env.action_space.n
+        self.state_space: int = self.env.observation_space.n
+        self.action_space: int = self.env.action_space.n
 
-        self.q_table = np.zeros((self.state_space, self.action_space))
+        self.q_table: np.ndarray = np.zeros((self.state_space, self.action_space))
 
-        self.states = []
-        self.actions = []
-        self.rewards = []
+        self.states = list()
+        self.actions = list()
+        self.rewards = list()
 
     def reset(self) -> None:
         super().reset()

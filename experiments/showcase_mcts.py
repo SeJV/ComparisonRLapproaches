@@ -51,7 +51,6 @@ time.sleep(15)
 while not done and steps < max_steps:
     action = mcts_agent.act(state)
     state, reward, done, _ = env.step(action)
-    print(action)
     mcts_agent.train(state, reward, done)
     steps += 1
 

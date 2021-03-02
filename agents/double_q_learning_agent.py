@@ -12,10 +12,10 @@ class DoubleQLearningAgent(QLearningAgent):
                          alpha=alpha, alpha_min=alpha_min, alpha_reduction=alpha_reduction, gamma=gamma, name=name)
 
         # only discrete environments possible
-        self.state_space = self.env.observation_space.n
-        self.action_space = self.env.action_space.n
+        self.state_space: int = self.env.observation_space.n
+        self.action_space: int = self.env.action_space.n
 
-        self.q_table = np.array([
+        self.q_table: np.ndarray = np.array([
             np.random.rand(self.state_space, self.action_space) * 0.01,
             np.random.rand(self.state_space, self.action_space) * 0.01
         ])  # two instead of one q-table

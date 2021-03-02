@@ -13,14 +13,14 @@ class QLearningAgent(AbstractAgent):
         self.gamma = gamma
 
         # only discrete environments possible
-        self.state_space = self.env.observation_space.n
-        self.action_space = self.env.action_space.n
+        self.state_space: int = self.env.observation_space.n
+        self.action_space: int = self.env.action_space.n
 
-        self.q_table = np.random.rand(self.state_space, self.action_space) * 0.01
+        self.q_table: np.ndarray = np.random.rand(self.state_space, self.action_space) * 0.01
         self.q_table_file = f'models/{self.name}/q_table.npy'
 
-        self.s = None
-        self.a = None
+        self.s: Optional[int] = None
+        self.a: Optional[int] = None
 
     def reset(self) -> None:
         super().reset()
