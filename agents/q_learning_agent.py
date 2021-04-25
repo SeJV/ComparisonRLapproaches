@@ -45,6 +45,9 @@ class QLearningAgent(AbstractAgent):
             reward + self.gamma * q_next - self.q_table[self.s, self.a]
         )
 
+    def get_state_value(self, state: int) -> float:
+        return np.max(self.q_table[state])
+
     def store_models(self) -> None:
         np.save(self.q_table_file, self.q_table)
 

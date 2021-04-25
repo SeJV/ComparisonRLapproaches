@@ -31,3 +31,6 @@ class AbstractAgent:
     def episode_done(self) -> None:
         self.epsilon = max(self.epsilon - self.epsilon_reduction, self.epsilon_min)
         self.alpha = max(self.alpha - self.alpha_reduction, self.alpha_min)
+
+    def get_state_value(self, state: Union[np.ndarray, float, int]) -> float:
+        ...

@@ -14,9 +14,9 @@ it can choose the optimal action for given state.
 
 
 env = MazeEnv(size='l')
-ROLLOUT_TRAINING = False
+ROLLOUT_TRAINING = True
 
-training_episodes = 150000
+training_episodes = 100000
 ql_hp = dict()
 ql_hp["epsilon"] = 1
 ql_hp["epsilon_min"] = .7
@@ -30,12 +30,11 @@ if ROLLOUT_TRAINING:
 else:
     rollout_policy_agent.load_models()
 
-rollout_policy_agent.epsilon = .2
+rollout_policy_agent.epsilon = .1
 rollout_policy_agent.alpha = .0
 
 mcts_agent = MCTreeSearchAgent(env,
-                               playouts_per_action=5,
-                               promising_children_playouts=1,
+                               playouts_per_action=10,
                                rollout_policy_agent=rollout_policy_agent,
                                c=0.1,
                                visualize=True)

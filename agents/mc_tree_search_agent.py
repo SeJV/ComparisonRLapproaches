@@ -58,15 +58,13 @@ class Node:
 
 class MCTreeSearchAgent(AbstractAgent):
     def __init__(self, env: DiscreteEnv, alpha: float = 0.01, alpha_min: float = 0,
-                 alpha_reduction: float = 0.0, gamma: float = 0.99, playouts_per_action: int = 10000,
-                 promising_children_playouts: int = 100, c: float = 1.41,
+                 alpha_reduction: float = 0.0, gamma: float = 0.99, playouts_per_action: int = 10000, c: float = 1.41,
                  rollout_policy_agent: Optional[AbstractAgent] = None, visualize: bool = False,
                  name: str = 'MCTreeSearchAgent'):
         super().__init__(env, alpha=alpha, alpha_min=alpha_min, alpha_reduction=alpha_reduction, name=name)
         self.gamma = gamma
 
         self.playouts_per_action = playouts_per_action  # for given state, how many playouts in total for the decision
-        self.promising_children_playouts = promising_children_playouts  # how many playouts per simulation of leaf node
         self.c = c  # exploration factor of uct formula, sqrt(2) in literature, but can be changed depending on env
 
         self.a = None  # action which was chosen by act function
@@ -100,42 +98,35 @@ class MCTreeSearchAgent(AbstractAgent):
             # 3. Simulation: choose one of the new expanded nodes, simulate playouts
             actions_to_promising = promising_leaf.get_action_chain()
 
-            for _ in range(self.promising_children_playouts):
-                # start from root node, execute action until the node
-                root_env_copy = copy.deepcopy(self.env)
-                is_done = False
-                for action in actions_to_promising:
-                    _, _, done, _ = root_env_copy.step(action)
-                    is_done = is_done or done
-                self.simulation_counter += 1
+            # start from root node, execute action until the node
+            root_env_copy = copy.deepcopy(self.env)
+            is_done = False
+            for action in actions_to_promising:
+                _, _, done, _ = root_env_copy.step(action)
+                is_done = is_done or done
+            self.simulation_counter += 1
 
-                if not is_done:
-                    for child in promising_leaf.children:
-                        root_env_copy_for_child = copy.deepcopy(root_env_copy)
-                        discount = self.gamma
+            if not is_done:
+                for child in promising_leaf.children:
+                    root_env_copy_for_child = copy.deepcopy(root_env_copy)
 
-                        state, reward, done, _ = root_env_copy_for_child.step(child.action)
-                        if child.reward != 0:
-                            child.reward = (1 - self.alpha) * child.reward + self.alpha * reward
-                        else:
-                            child.reward = reward
-                        sum_of_future_rewards = 0
-                        steps = 0
-                        while not done and steps < 100:
-                            action = self.rollout_policy_agent.act(state)
-                            state, reward, done, _ = root_env_copy_for_child.step(action)
-                            # self.rollout_policy_agent.train(state, reward, done)
+                    state, reward, done, _ = root_env_copy_for_child.step(child.action)
+                    if child.reward != 0:
+                        child.reward = (1 - self.alpha) * child.reward + self.alpha * reward
+                    else:
+                        child.reward = reward
 
-                            sum_of_future_rewards += discount * reward
-                            discount *= self.gamma
-                            steps += 1
+                    future_rewards = 0
+                    if not done:
+                        future_rewards = self.gamma * self.rollout_policy_agent.get_state_value(state)
 
-                        child.visits += 1
-                        if child.future_rewards != 0:
-                            child.future_rewards = (
-                                (1 - self.alpha) * child.future_rewards + self.alpha * sum_of_future_rewards)
-                        else:
-                            child.future_rewards = sum_of_future_rewards
+                    child.visits += 1
+                    if child.future_rewards != 0:
+                        child.future_rewards = (
+                            (1 - self.alpha) * child.future_rewards + self.alpha * future_rewards)
+                    else:
+                        child.future_rewards = future_rewards
+
                     # 4. Backpropagation: Update all parent nodes in the chain
                     update_node = child
                     while update_node.parent:
@@ -149,6 +140,7 @@ class MCTreeSearchAgent(AbstractAgent):
         children_values = self._get_child_values()
         self.a = int(np.argmax(children_values))
         self.simulation_counter = 0  # reset simulation_counter for next action decision
+        print(self.a, ": ", children_values)
         return self.a
 
     def train(self, s_next: int, reward: float, done: bool) -> None:
